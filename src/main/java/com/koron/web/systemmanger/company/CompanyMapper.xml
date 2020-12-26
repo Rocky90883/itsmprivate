@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koron.web.systemmanger.company.CompanyMapper">
+
+  <resultMap id="BaseResultMap" type="com.koron.web.systemmanger.company.bean.CompanyBean">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="com_number" jdbcType="VARCHAR" property="comNumber" />
+    <result column="com_full_name" jdbcType="VARCHAR" property="comFullName" />
+    <result column="com_address" jdbcType="VARCHAR" property="comAddress" />
+    <result column="com_tel" jdbcType="VARCHAR" property="comTel" />
+    <result column="com_person" jdbcType="VARCHAR" property="comPerson" />
+    <result column="person_mobile" jdbcType="VARCHAR" property="personMobile" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_account" jdbcType="VARCHAR" property="createAccount" />
+    <result column="create_name" jdbcType="VARCHAR" property="createName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_account" jdbcType="VARCHAR" property="updateAccount" />
+    <result column="update_name" jdbcType="VARCHAR" property="updateName" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+
+  <sql id="listCondition">
+    <where>
+      1=1
+      <if test="comNumber   !=null"> and com_number        =#{comNumber  }</if>
+      <if test="comFullName !=null"> and com_full_name     =#{comFullName}</if>
+      <if test="comPerson   !=null"> and com_person        =#{comPerson  }</if>
+    </where>
+  </sql>
+
+  <sql id="Base_Column_List">
+    id, com_number, com_full_name, com_address, com_tel, com_person, person_mobile, sort, 
+    create_time, create_account, create_name, update_time, update_account, update_name, 
+    remark
+  </sql>
+
+  <select id="queryList" parameterType="com.koron.web.systemmanger.company.bean.CompanyDto" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tblcompany
+    <include refid="listCondition"></include>
+    order by sort asc
+  </select>
+
+  <select id="queryAllList" parameterType="com.koron.web.systemmanger.company.bean.CompanyDto" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tblcompany
+    <include refid="listCondition"></include>
+    order by sort asc
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tblcompany
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tblcompany
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.koron.web.systemmanger.company.bean.CompanyBean" useGeneratedKeys="true">
+    insert into tblcompany
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="comNumber != null">
+        com_number,
+      </if>
+      <if test="comFullName != null">
+        com_full_name,
+      </if>
+      <if test="comAddress != null">
+        com_address,
+      </if>
+      <if test="comTel != null">
+        com_tel,
+      </if>
+      <if test="comPerson != null">
+        com_person,
+      </if>
+      <if test="personMobile != null">
+        person_mobile,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createAccount != null">
+        create_account,
+      </if>
+      <if test="createName != null">
+        create_name,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateAccount != null">
+        update_account,
+      </if>
+      <if test="updateName != null">
+        update_name,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="comNumber != null">
+        #{comNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="comFullName != null">
+        #{comFullName,jdbcType=VARCHAR},
+      </if>
+      <if test="comAddress != null">
+        #{comAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="comTel != null">
+        #{comTel,jdbcType=VARCHAR},
+      </if>
+      <if test="comPerson != null">
+        #{comPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="personMobile != null">
+        #{personMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createAccount != null">
+        #{createAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="createName != null">
+        #{createName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAccount != null">
+        #{updateAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="updateName != null">
+        #{updateName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.koron.web.systemmanger.company.bean.CompanyBean">
+    update tblcompany
+    <set>
+      <if test="comNumber != null">
+        com_number = #{comNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="comFullName != null">
+        com_full_name = #{comFullName,jdbcType=VARCHAR},
+      </if>
+      <if test="comAddress != null">
+        com_address = #{comAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="comTel != null">
+        com_tel = #{comTel,jdbcType=VARCHAR},
+      </if>
+      <if test="comPerson != null">
+        com_person = #{comPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="personMobile != null">
+        person_mobile = #{personMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createAccount != null">
+        create_account = #{createAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="createName != null">
+        create_name = #{createName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAccount != null">
+        update_account = #{updateAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="updateName != null">
+        update_name = #{updateName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

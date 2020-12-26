@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koron.web.asset.assets.attributes.AttributesMapper">
+
+  <resultMap id="BaseResultMap" type="com.koron.web.asset.assets.attributes.AttributesBean">
+    <id column="asset_id" jdbcType="VARCHAR" property="assetId" />
+    <result column="cpu" jdbcType="VARCHAR" property="cpu" />
+    <result column="ram" jdbcType="VARCHAR" property="ram" />
+    <result column="disk" jdbcType="VARCHAR" property="disk" />
+    <result column="wattage" jdbcType="VARCHAR" property="wattage" />
+    <result column="portqty" jdbcType="VARCHAR" property="portqty" />
+    <result column="bandwidth" jdbcType="VARCHAR" property="bandwidth" />
+    <result column="spec" jdbcType="VARCHAR" property="spec" />
+    <result column="edition" jdbcType="VARCHAR" property="edition" />
+    <result column="warranty" jdbcType="VARCHAR" property="warranty" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    asset_id, cpu, ram, `disk`, wattage, portqty, bandwidth, spec, edition, warranty
+  </sql>
+
+  <select id="queryList" parameterType="com.koron.web.asset.assets.attributes.AttributesBean" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from asset_attributes
+    left join assets on assets.id=asset_attributes.asset_id
+    order by assets.create_time desc
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from asset_attributes
+    left join assets on assets.id=asset_attributes.asset_id
+    where asset_id = #{assetId,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from asset_attributes
+    where asset_id = #{assetId,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insertSelective" keyColumn="asset_id" keyProperty="assetId" parameterType="com.koron.web.asset.assets.attributes.AttributesBean" useGeneratedKeys="true">
+    insert into asset_attributes
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="assetId != null">
+        asset_id,
+      </if>
+      <if test="cpu != null">
+        cpu,
+      </if>
+      <if test="ram != null">
+        ram,
+      </if>
+      <if test="disk != null">
+        `disk`,
+      </if>
+      <if test="wattage != null">
+        wattage,
+      </if>
+      <if test="portqty != null">
+        portqty,
+      </if>
+      <if test="bandwidth != null">
+        bandwidth,
+      </if>
+      <if test="spec != null">
+        spec,
+      </if>
+      <if test="edition != null">
+        edition,
+      </if>
+      <if test="warranty != null">
+        warranty,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="assetId != null">
+        #{assetId,jdbcType=VARCHAR},
+      </if>
+      <if test="cpu != null">
+        #{cpu,jdbcType=VARCHAR},
+      </if>
+      <if test="ram != null">
+        #{ram,jdbcType=VARCHAR},
+      </if>
+      <if test="disk != null">
+        #{disk,jdbcType=VARCHAR},
+      </if>
+      <if test="wattage != null">
+        #{wattage,jdbcType=VARCHAR},
+      </if>
+      <if test="portqty != null">
+        #{portqty,jdbcType=VARCHAR},
+      </if>
+      <if test="bandwidth != null">
+        #{bandwidth,jdbcType=VARCHAR},
+      </if>
+      <if test="spec != null">
+        #{spec,jdbcType=VARCHAR},
+      </if>
+      <if test="edition != null">
+        #{edition,jdbcType=VARCHAR},
+      </if>
+      <if test="warranty != null">
+        #{warranty,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.koron.web.asset.assets.attributes.AttributesBean">
+    update asset_attributes
+    <set>
+      <if test="cpu != null">
+        cpu = #{cpu,jdbcType=VARCHAR},
+      </if>
+      <if test="ram != null">
+        ram = #{ram,jdbcType=VARCHAR},
+      </if>
+      <if test="disk != null">
+        `disk` = #{disk,jdbcType=VARCHAR},
+      </if>
+      <if test="wattage != null">
+        wattage = #{wattage,jdbcType=VARCHAR},
+      </if>
+      <if test="portqty != null">
+        portqty = #{portqty,jdbcType=VARCHAR},
+      </if>
+      <if test="bandwidth != null">
+        bandwidth = #{bandwidth,jdbcType=VARCHAR},
+      </if>
+      <if test="spec != null">
+        spec = #{spec,jdbcType=VARCHAR},
+      </if>
+      <if test="edition != null">
+        edition = #{edition,jdbcType=VARCHAR},
+      </if>
+      <if test="warranty != null">
+        warranty = #{warranty,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where asset_id = #{assetId,jdbcType=VARCHAR}
+  </update>
+
+
+
+</mapper>

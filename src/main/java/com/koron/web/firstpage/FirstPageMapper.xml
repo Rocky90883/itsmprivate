@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koron.web.firstpage.FirstPageMapper">
+
+
+
+
+  <select id="queryservicesList"  resultType="com.koron.web.firstpage.bean.ServiceAndMtBean">
+    select s.name as staffunName,v.*
+    from view_serviceandmt_all v
+    left join tblstaffun s on s.code=v.employee_id
+    where 1=1 and
+    procInstType in
+    <foreach collection="array" open="(" separator="," close=")" item="procInstTypelist">
+      #{procInstTypelist}
+    </foreach>
+    order by v.create_time desc
+    limit 0,10
+  </select>
+
+
+  <select id="querySpareFristList"  resultType="com.koron.web.firstpage.bean.SpareFristBean">
+    select s.name as staffunName,v.*
+    from view_spare v
+    left join tblstaffun s on s.code=v.employee_id
+    where 1=1
+    order by v.create_time desc
+    limit 0,10
+  </select>
+
+
+</mapper>

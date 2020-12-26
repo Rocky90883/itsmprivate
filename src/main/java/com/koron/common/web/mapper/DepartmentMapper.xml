@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koron.common.web.mapper.DepartmentMapper">
+
+	<!-- 批量添加 -->
+	<insert parameterType="java.util.List" id="addDepartments">
+		INSERT INTO `tbldepartun`
+		(`name`,`code`,`parent_code`,`tree_type`,`description`,`shortname`,`mask`,`parentmask`,`link`)
+		VALUES
+		<foreach collection="list" item="li" separator=",">
+			(#{li.name},#{li.code},#{li.parentCode},#{li.treeType},#{li.description},#{li.shortname},#{li.mask},#{li.parentmask},#{li.link})
+		</foreach>
+		ON DUPLICATE KEY UPDATE
+        name= VALUES(`name`), code= VALUES(`code`),parent_code= VALUES(`parent_Code`),tree_type= VALUES(`tree_Type`),
+         description= VALUES(`description`), shortname= VALUES(`shortname`), mask= VALUES(`mask`), parentmask= VALUES(`parentmask`), link= VALUES(`link`)
+	</insert>
+
+    <!-- 批量修改 -->
+    <update id="updateDepartments" parameterType="java.util.List" >
+        <foreach collection="list" item="it" index="index" open="" close="" separator=";">
+            UPDATE `tbldepartun`
+            <set>
+                `name`=#{it.name},`shortname`=#{it.shortname},`parent_code`=#{it.parentCode},
+                `description`=#{it.description},`shortname`=#{it.shortname},`tree_type`=#{it.treeType}
+                ,`mask`=#{it.mask},`parentmask`=#{it.parentmask},`link`=#{it.link}
+            </set>
+            WHERE `code`=#{it.code}
+        </foreach>
+    </update>
+
+
+</mapper>

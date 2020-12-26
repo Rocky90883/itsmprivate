@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koron.web.asset.shift.AssetShiftMapper">
+
+  <resultMap id="BaseResultMap" type="com.koron.web.asset.shift.bean.AssetShiftBean">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="orgId" jdbcType="VARCHAR" property="orgid" />
+    <result column="bill_no" jdbcType="VARCHAR" property="billNo" />
+    <result column="bill_date" jdbcType="VARCHAR" property="billDate" />
+    <result column="source_id" jdbcType="VARCHAR" property="sourceId" />
+    <result column="before_emp_id" jdbcType="VARCHAR" property="beforeEmpId" />
+    <result column="emp_id" jdbcType="VARCHAR" property="empId" />
+    <result column="depatCode" jdbcType="VARCHAR" property="depatcode" />
+    <result column="workflowid" jdbcType="VARCHAR" property="workflowid" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="stage" jdbcType="VARCHAR" property="stage" />
+    <result column="auditor" jdbcType="VARCHAR" property="auditor" />
+    <result column="remove_flag" jdbcType="INTEGER" property="removeFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_account" jdbcType="VARCHAR" property="createAccount" />
+    <result column="create_name" jdbcType="VARCHAR" property="createName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_account" jdbcType="VARCHAR" property="updateAccount" />
+    <result column="update_name" jdbcType="VARCHAR" property="updateName" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="assetTypeName" jdbcType="VARCHAR" property="assetTypeName" />
+    <result column="goodsModel" jdbcType="VARCHAR" property="goodsModel" />
+    <result column="assetsNumber" jdbcType="VARCHAR" property="assetsNumber" />
+    <result column="fixedNumber" jdbcType="VARCHAR" property="fixedNumber" />
+    <result column="depatName" jdbcType="VARCHAR" property="depatName" />
+    <result column="staffunName" jdbcType="VARCHAR" property="staffunName" />
+    <result column="auditorName" jdbcType="VARCHAR" property="auditorName" />
+    <result column="stage" jdbcType="VARCHAR" property="stage" />
+    <result column="remove_flag" jdbcType="INTEGER" property="removeFlag" />
+    <result column="zystaffunName" jdbcType="INTEGER" property="zystaffunName" />
+    <result column="tydepatName" jdbcType="INTEGER" property="tydepatName" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, orgId, bill_no, bill_date, source_id, before_emp_id, emp_id, depatCode, workflowid, 
+    `status`, stage, auditor, remove_flag, create_time, create_account, create_name, 
+    update_time, update_account, update_name, remark
+  </sql>
+
+  <select id="queryList" parameterType="com.koron.web.asset.shift.bean.AssetShiftQueryBean" resultMap="BaseResultMap">
+    select asstype.typeName as assetTypeName,t.goods_model as goodsModel,t.assets_number as assetsNumber,t.fixed_number as fixedNumber,
+       s.name as staffunName,d.name as depatName,es.name as zystaffunName,ed.name as tydepatName,
+       ws.name as auditorName,asset_shift.*
+    from asset_shift
+         left join assets t on t.id=asset_shift.source_id
+         left join asset_type asstype on asstype.id=t.asset_type_id
+         left join tblstaffun s on s.code=t.emp_id
+         left join tbldepartun d on d.code=t.depat_code
+         left join tblstaffun es on es.code=asset_shift.emp_id
+         left join tbldepartun ed on ed.code=es.org_node_code
+         left join tblstaffun ws on ws.workflow_code=asset_shift.auditor
+    where 1=1 and asset_shift.remove_flag = 0
+    <if test="beginDate  != null and beginDate != ''">
+      and DATE_FORMAT( asset_shift.bill_date, '%Y-%m-%d') &gt;= DATE_FORMAT(#{beginDate}, '%Y-%m-%d')
+    </if>
+    <if test="endDate != null and endDate != ''">
+      and DATE_FORMAT( asset_shift.bill_date, '%Y-%m-%d') &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    </if>
+    <if test="billNo != null and billNo !=''">
+      and asset_shift.bill_no like CONCAT('%', #{billNo}, '%')
+    </if>
+    <if test="staffunName != null and staffunName !=''">
+      and s.name like CONCAT('%', #{staffunName}, '%')
+    </if>
+    <if test="zystaffunName != null and zystaffunName !=''">
+      and es.name like CONCAT('%', #{zystaffunName}, '%')
+    </if>
+    <if test="goodsModel != null and goodsModel !=''">
+      and t.goods_model like CONCAT('%', #{goodsModel}, '%')
+    </if>
+    <if test="logincode != null and logincode!='' and broper!='all'">
+      and (asset_shift.create_account = #{logincode,jdbcType=VARCHAR} || asset_shift.before_emp_id = #{logincode,jdbcType=VARCHAR})
+    </if>
+    order by asset_shift.bill_date desc,asset_shift.create_time desc
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select asstype.typeName as assetTypeName,t.goods_model as goodsModel,t.assets_number as assetsNumber,t.fixed_number as fixedNumber,
+       s.name as staffunName,d.name as depatName,es.name as zystaffunName,ed.name as tydepatName,
+       ws.name as auditorName,asset_shift.*
+    from asset_shift
+         left join assets t on t.id=asset_shift.source_id
+         left join asset_type asstype on asstype.id=t.asset_type_id
+         left join tblstaffun s on s.code=t.emp_id
+         left join tbldepartun d on d.code=t.depat_code
+         left join tblstaffun es on es.code=asset_shift.emp_id
+         left join tbldepartun ed on ed.code=es.org_node_code
+         left join tblstaffun ws on ws.workflow_code=asset_shift.auditor
+    where asset_shift.id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from asset_shift
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.koron.web.asset.shift.bean.AssetShiftBean" useGeneratedKeys="true">
+    insert into asset_shift
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orgid != null">
+        orgId,
+      </if>
+      <if test="billNo != null">
+        bill_no,
+      </if>
+      <if test="billDate != null">
+        bill_date,
+      </if>
+      <if test="sourceId != null">
+        source_id,
+      </if>
+      <if test="beforeEmpId != null">
+        before_emp_id,
+      </if>
+      <if test="empId != null">
+        emp_id,
+      </if>
+      <if test="depatcode != null">
+        depatCode,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="removeFlag != null">
+        remove_flag,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createAccount != null">
+        create_account,
+      </if>
+      <if test="createName != null">
+        create_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="orgid != null">
+        #{orgid,jdbcType=VARCHAR},
+      </if>
+      <if test="billNo != null">
+        #{billNo,jdbcType=VARCHAR},
+      </if>
+      <if test="billDate != null">
+        #{billDate,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceId != null">
+        #{sourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="beforeEmpId != null">
+        #{beforeEmpId,jdbcType=VARCHAR},
+      </if>
+      <if test="empId != null">
+        #{empId,jdbcType=VARCHAR},
+      </if>
+      <if test="depatcode != null">
+        #{depatcode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="removeFlag != null">
+        #{removeFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createAccount != null">
+        #{createAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="createName != null">
+        #{createName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.koron.web.asset.shift.bean.AssetShiftBean">
+    update asset_shift
+    <set>
+      <if test="orgid != null">
+        orgId = #{orgid,jdbcType=VARCHAR},
+      </if>
+      <if test="billNo != null">
+        bill_no = #{billNo,jdbcType=VARCHAR},
+      </if>
+      <if test="billDate != null">
+        bill_date = #{billDate,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceId != null">
+        source_id = #{sourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="beforeEmpId != null">
+        before_emp_id = #{beforeEmpId,jdbcType=VARCHAR},
+      </if>
+      <if test="empId != null">
+        emp_id = #{empId,jdbcType=VARCHAR},
+      </if>
+      <if test="depatcode != null">
+        depatCode = #{depatcode,jdbcType=VARCHAR},
+      </if>
+      <if test="workflowid != null">
+        workflowid = #{workflowid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="stage != null">
+        stage = #{stage,jdbcType=VARCHAR},
+      </if>
+      <if test="auditor != null">
+        auditor = #{auditor,jdbcType=VARCHAR},
+      </if>
+      <if test="removeFlag != null">
+        remove_flag = #{removeFlag,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAccount != null">
+        update_account = #{updateAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="updateName != null">
+        update_name = #{updateName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

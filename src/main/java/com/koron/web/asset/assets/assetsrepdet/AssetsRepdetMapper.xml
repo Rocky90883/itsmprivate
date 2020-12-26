@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koron.web.asset.assets.assetsrepdet.AssetsRepdetMapper">
+
+  <resultMap id="BaseResultMap" type="com.koron.web.asset.assets.assetsrepdet.bean.AssetsRepdetBean">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="f_ref" jdbcType="VARCHAR" property="fRef" />
+    <result column="bill_date" jdbcType="VARCHAR" property="billDate" />
+    <result column="service_id" jdbcType="VARCHAR" property="serviceId" />
+    <result column="service_order_no" jdbcType="VARCHAR" property="serviceOrderNo" />
+    <result column="service_type" jdbcType="VARCHAR" property="serviceType" />
+    <result column="employee_id" jdbcType="VARCHAR" property="employeeId" />
+    <result column="staffun_name" jdbcType="VARCHAR" property="staffunName" />
+    <result column="app_content" jdbcType="VARCHAR" property="appContent" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_account" jdbcType="VARCHAR" property="createAccount" />
+    <result column="create_name" jdbcType="VARCHAR" property="createName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_account" jdbcType="VARCHAR" property="updateAccount" />
+    <result column="update_name" jdbcType="VARCHAR" property="updateName" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, f_ref, bill_date, service_id, service_order_no, service_type, employee_id, staffun_name, 
+    app_content, create_time, create_account, create_name, update_time, update_account, 
+    update_name, remark
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from assets_repdet
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from assets_repdet
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.koron.web.asset.assets.assetsrepdet.bean.AssetsRepdetBean" useGeneratedKeys="true">
+    insert into assets_repdet
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="fRef != null">
+        f_ref,
+      </if>
+      <if test="billDate != null">
+        bill_date,
+      </if>
+      <if test="serviceId != null">
+        service_id,
+      </if>
+      <if test="serviceOrderNo != null">
+        service_order_no,
+      </if>
+      <if test="serviceType != null">
+        service_type,
+      </if>
+      <if test="employeeId != null">
+        employee_id,
+      </if>
+      <if test="staffunName != null">
+        staffun_name,
+      </if>
+      <if test="appContent != null">
+        app_content,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createAccount != null">
+        create_account,
+      </if>
+      <if test="createName != null">
+        create_name,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="fRef != null">
+        #{fRef,jdbcType=VARCHAR},
+      </if>
+      <if test="billDate != null">
+        #{billDate,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceId != null">
+        #{serviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceOrderNo != null">
+        #{serviceOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceType != null">
+        #{serviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeId != null">
+        #{employeeId,jdbcType=VARCHAR},
+      </if>
+      <if test="staffunName != null">
+        #{staffunName,jdbcType=VARCHAR},
+      </if>
+      <if test="appContent != null">
+        #{appContent,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createAccount != null">
+        #{createAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="createName != null">
+        #{createName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.koron.web.asset.assets.assetsrepdet.bean.AssetsRepdetBean">
+    update assets_repdet
+    <set>
+      <if test="fRef != null">
+        f_ref = #{fRef,jdbcType=VARCHAR},
+      </if>
+      <if test="billDate != null">
+        bill_date = #{billDate,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceId != null">
+        service_id = #{serviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceOrderNo != null">
+        service_order_no = #{serviceOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceType != null">
+        service_type = #{serviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeId != null">
+        employee_id = #{employeeId,jdbcType=VARCHAR},
+      </if>
+      <if test="staffunName != null">
+        staffun_name = #{staffunName,jdbcType=VARCHAR},
+      </if>
+      <if test="appContent != null">
+        app_content = #{appContent,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAccount != null">
+        update_account = #{updateAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="updateName != null">
+        update_name = #{updateName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

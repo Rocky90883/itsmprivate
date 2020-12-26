@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koron.web.meeting.MeetingMapper">
+
+    <sql id="listCondition">
+        <where>
+            1=1
+            <if test="id         !=null"> and id          = #{id         }</if>
+            <if test="billDate  !=null"> and bill_date   = #{billDate  }</if>
+            <if test="sort       !=null"> and sort        = #{sort       }</if>
+            <if test="title      !=null"> and title       = #{title      }</if>
+            <if test="content    !=null"> and content     = #{content    }</if>
+            <if test="status     !=null"> and status      = #{status     }</if>
+            <if test="orgId     !=null"> and org_id      = #{orgId     }</if>
+            <if test="createBy  !=null"> and create_by   = #{createBy  }</if>
+            <if test="createTime!=null"> and create_time = #{createTime}</if>
+            <if test="modifyBy  !=null"> and modify_by   = #{modifyBy  }</if>
+            <if test="modifyTime!=null"> and modify_time = #{modifyTime}</if>
+        </where>
+    </sql>
+
+    <select id="list" parameterType="com.koron.web.meeting.MeetingQueryBean" resultType="com.koron.web.meeting.MeetingBean">
+        select * FROM (
+        select tt.*,ROWNUM as rowmo FROM (
+        select * from METTING.MEETING t
+        <include refid="listCondition"></include> ORDER BY t.id asc
+        ) tt
+        ) table_alias
+        <if test="pageSize != -1">
+            where table_alias.rowmo BETWEEN #{begin} and #{end}
+        </if>
+        order by table_alias.BILL_DATE ,table_alias.TITLE ,table_alias.sort
+    </select>
+
+    <select id="count" parameterType="com.koron.web.meeting.MeetingQueryBean" resultType="Integer">
+        SELECT COUNT(*) FROM METTING.MEETING
+        <include refid="listCondition"></include>
+    </select>
+
+
+    <update id="update" parameterType="com.koron.web.meeting.MeetingBean">
+        UPDATE METTING.MEETING
+        <set>
+            <if test="billDate  !=null">  bill_date   = #{billDate  },</if>
+            <if test="sort       !=null"> sort        = #{sort       },</if>
+            <if test="title      !=null"> title       = #{title      },</if>
+            <if test="content    !=null"> content     = #{content    },</if>
+            <if test="status     !=null"> status      = #{status     },</if>
+            <if test="orgId     !=null">  org_id      = #{orgId     },</if>
+            <if test="modifyBy  !=null">  modify_by   = #{modifyBy  },</if>
+            <if test="modifyTime!=null">  modify_time = #{modifyTime}</if>
+        </set>
+        WHERE id = #{id}
+
+    </update>
+
+    <insert id="add" parameterType="com.koron.web.meeting.MeetingBean">
+        INSERT INTO metting.meeting
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test ='null != id'>
+                id,
+            </if>
+            <if test ='null != billDate'>
+                bill_date,
+            </if>
+            <if test ='null != sort'>
+                sort,
+            </if>
+            <if test ='null != title'>
+                title,
+            </if>
+            <if test ='null != content'>
+                content,
+            </if>
+            <if test ='null != status'>
+                status,
+            </if>
+            <if test ='null != orgId'>
+                org_id,
+            </if>
+            <if test ='null != createBy'>
+                create_by,
+            </if>
+            <if test ='null != createTime'>
+                create_time,
+            </if>
+            <if test ='null != modifyBy'>
+                modify_by,
+            </if>
+            <if test ='null != modifyTime'>
+                modify_time
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test ='null != id'>
+                #{id},
+            </if>
+            <if test ='null != billDate'>
+                #{billDate},
+            </if>
+            <if test ='null != sort'>
+                #{sort},
+            </if>
+            <if test ='null != title'>
+                #{title},
+            </if>
+            <if test ='null != content'>
+                #{content},
+            </if>
+            <if test ='null != status'>
+                #{status},
+            </if>
+            <if test ='null != orgId'>
+                #{orgId},
+            </if>
+            <if test ='null != createBy'>
+                #{createBy},
+            </if>
+            <if test ='null != createTime'>
+                #{createTime},
+            </if>
+            <if test ='null != modifyBy'>
+                #{modifyBy},
+            </if>
+            <if test ='null != modifyTime'>
+                #{modifyTime}
+            </if>
+        </trim>
+    </insert>
+
+
+
+
+
+</mapper>

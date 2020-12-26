@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koron.web.asset.scrapped.ScrappedMapper">
+
+  <resultMap id="BaseResultMap" type="com.koron.web.asset.scrapped.bean.ScrappedBean">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="orgId" jdbcType="VARCHAR" property="orgid" />
+    <result column="bill_no" jdbcType="VARCHAR" property="billNo" />
+    <result column="bill_date" jdbcType="VARCHAR" property="billDate" />
+    <result column="source_id" jdbcType="VARCHAR" property="sourceId" />
+    <result column="employee_id" jdbcType="VARCHAR" property="employeeId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_account" jdbcType="VARCHAR" property="createAccount" />
+    <result column="create_name" jdbcType="VARCHAR" property="createName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_account" jdbcType="VARCHAR" property="updateAccount" />
+    <result column="update_name" jdbcType="VARCHAR" property="updateName" />
+    <result column="assetTypeName" jdbcType="VARCHAR" property="assetTypeName" />
+    <result column="goodsModel" jdbcType="VARCHAR" property="goodsModel" />
+    <result column="assetsNumber" jdbcType="VARCHAR" property="assetsNumber" />
+    <result column="fixedNumber" jdbcType="VARCHAR" property="fixedNumber" />
+    <result column="depatName" jdbcType="VARCHAR" property="depatName" />
+    <result column="staffunName" jdbcType="VARCHAR" property="staffunName" />
+    <result column="auditorName" jdbcType="VARCHAR" property="auditorName" />
+    <result column="stage" jdbcType="VARCHAR" property="stage" />
+    <result column="remove_flag" jdbcType="INTEGER" property="removeFlag" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, orgId, bill_no, source_id, employee_id, create_time, create_account, create_name, 
+    update_time, update_account, update_name
+  </sql>
+
+  <select id="queryList" parameterType="com.koron.web.asset.scrapped.bean.ScrappedQueryBean" resultMap="BaseResultMap">
+    select asstype.typeName as assetTypeName,t.goods_model as goodsModel,t.assets_number as assetsNumber,t.fixed_number as fixedNumber,
+       s.name as staffunName,d.name as depatName,ws.name as auditorName,scrapped.*
+    from scrapped
+    left join assets t on t.id=scrapped.source_id
+    left join asset_type asstype on asstype.id=t.asset_type_id
+    left join tblstaffun s on s.code=t.emp_id
+    left join tbldepartun d on d.code=t.depat_code
+    left join tblstaffun ws on ws.workflow_code=scrapped.auditor
+    where 1=1 and remove_flag = 0
+    <if test="beginDate  != null and beginDate != ''">
+      and DATE_FORMAT( scrapped.bill_date, '%Y-%m-%d') &gt;= DATE_FORMAT(#{beginDate}, '%Y-%m-%d')
+    </if>
+    <if test="endDate != null and endDate != ''">
+      and DATE_FORMAT( scrapped.bill_date, '%Y-%m-%d') &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    </if>
+    <if test="staffunName != null and staffunName !=''">
+        and s.name like CONCAT('%', #{staffunName}, '%')
+    </if>
+    <if test="goodsModel != null and goodsModel !=''">
+        and t.goods_model like CONCAT('%', #{goodsModel}, '%')
+    </if>
+    <if test="billNo != null and billNo !=''">
+        and scrapped.bill_no like CONCAT('%', #{billNo}, '%')
+    </if>
+    <if test="depatName != null and depatName !=''">
+        and d.name like CONCAT('%', #{depatName}, '%')
+    </if>
+    <if test="logincode != null and logincode!='' and broper!='all'">
+      and (scrapped.create_account = #{logincode,jdbcType=VARCHAR} || scrapped.employee_id = #{logincode,jdbcType=VARCHAR})
+    </if>
+    order by scrapped.bill_date desc,scrapped.create_time desc
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select asstype.typeName as assetTypeName,t.goods_model as goodsModel,t.assets_number as assetsNumber,t.fixed_number as fixedNumber,
+    s.name as staffunName,d.name as depatName,ws.name as auditorName,scrapped.*
+<!--    <include refid="Base_Column_List" />-->
+    from scrapped
+    left join assets t on t.id=scrapped.source_id
+    left join asset_type asstype on asstype.id=t.asset_type_id
+    left join tblstaffun s on s.code=t.emp_id
+    left join tbldepartun d on d.code=t.depat_code
+    left join tblstaffun ws on ws.workflow_code=scrapped.auditor
+    where scrapped.id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    update scrapped set remove_flag = -1 where id = #{id,jdbcType=VARCHAR}
+  </delete>
+<!--    delete from scrapped
+  where id = #{id,jdbcType=VARCHAR}-->
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.koron.web.asset.scrapped.bean.ScrappedBean" useGeneratedKeys="true">
+    insert into scrapped
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orgid != null">
+        orgId,
+      </if>
+      <if test="billNo != null">
+        bill_no,
+      </if>
+      <if test="billDate != null">
+        bill_date,
+      </if>
+      <if test="sourceId != null">
+        source_id,
+      </if>
+      <if test="employeeId != null">
+        employee_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="removeFlag != null">
+        remove_flag,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createAccount != null">
+        create_account,
+      </if>
+      <if test="createName != null">
+        create_name,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateAccount != null">
+        update_account,
+      </if>
+      <if test="updateName != null">
+        update_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="orgid != null">
+        #{orgid,jdbcType=VARCHAR},
+      </if>
+      <if test="billNo != null">
+        #{billNo,jdbcType=VARCHAR},
+      </if>
+      <if test="billDate != null">
+        #{billDate,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceId != null">
+        #{sourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeId != null">
+        #{employeeId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="removeFlag != null">
+        #{removeFlag,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createAccount != null">
+        #{createAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="createName != null">
+        #{createName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAccount != null">
+        #{updateAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="updateName != null">
+        #{updateName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.koron.web.asset.scrapped.bean.ScrappedBean">
+    update scrapped
+    <set>
+      <if test="orgid != null">
+        orgId = #{orgid,jdbcType=VARCHAR},
+      </if>
+      <if test="billNo != null">
+        bill_no = #{billNo,jdbcType=VARCHAR},
+      </if>
+      <if test="billDate != null">
+        bill_date = #{billDate,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceId != null">
+        source_id = #{sourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeId != null">
+        employee_id = #{employeeId,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createAccount != null">
+        create_account = #{createAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="createName != null">
+        create_name = #{createName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAccount != null">
+        update_account = #{updateAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="updateName != null">
+        update_name = #{updateName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+<!--  &lt;!&ndash; 根据用户名获取code &ndash;&gt;-->
+<!--  <select id="getUserCode" resultType="java.lang.String">-->
+<!--    SELECT workflow_code FROM tblstaffun WHERE-->
+<!--    code in-->
+<!--    <foreach collection="array" open="(" separator="," close=")" item="codes">-->
+<!--      #{codes}-->
+<!--    </foreach>-->
+<!--  </select>-->
+
+</mapper>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koron.web.annex.AnnexMapper">
+
+  <resultMap id="BaseResultMap" type="com.koron.web.annex.bean.AnnexBean">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="source_id" jdbcType="VARCHAR" property="sourceId" />
+    <result column="bill_type" jdbcType="VARCHAR" property="billType" />
+    <result column="suffix" jdbcType="VARCHAR" property="suffix" />
+    <result column="annex_name" jdbcType="VARCHAR" property="annexName" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <result column="create_account" jdbcType="VARCHAR" property="createAccount" />
+    <result column="create_name" jdbcType="VARCHAR" property="createName" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, source_id, bill_type, suffix, annex_name, create_time, create_account, create_name
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from annex
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from annex
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.koron.web.annex.bean.AnnexBean" useGeneratedKeys="true">
+    insert into annex
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="sourceId != null">
+        source_id,
+      </if>
+      <if test="billType != null">
+        bill_type,
+      </if>
+      <if test="suffix != null">
+        suffix,
+      </if>
+      <if test="annexName != null">
+        annex_name,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createAccount != null">
+        create_account,
+      </if>
+      <if test="createName != null">
+        create_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceId != null">
+        #{sourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="billType != null">
+        #{billType,jdbcType=VARCHAR},
+      </if>
+      <if test="suffix != null">
+        #{suffix,jdbcType=VARCHAR},
+      </if>
+      <if test="annexName != null">
+        #{annexName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="createAccount != null">
+        #{createAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="createName != null">
+        #{createName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.koron.web.annex.bean.AnnexBean">
+    update annex
+    <set>
+      <if test="sourceId != null">
+        source_id = #{sourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="billType != null">
+        bill_type = #{billType,jdbcType=VARCHAR},
+      </if>
+      <if test="suffix != null">
+        suffix = #{suffix,jdbcType=VARCHAR},
+      </if>
+      <if test="annexName != null">
+        annex_name = #{annexName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="createAccount != null">
+        create_account = #{createAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="createName != null">
+        create_name = #{createName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

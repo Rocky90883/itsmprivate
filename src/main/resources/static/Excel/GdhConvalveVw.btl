@@ -1,0 +1,45 @@
+<%
+var col = 0;
+var row = 1;
+%>
+[{"value":"Sheet1","type":7}
+
+<%for(item in data){
+        var
+		var subtype = item.subtype;
+		var p_code = item.p_code;
+		var type = item.type;
+		var caliber = item.caliber;
+		var material = item.material;
+		var onoff_stats = item.onoff_stats;
+		var work_stats = item.work_stats;
+		var elevation = item.elevation;
+		var bur_depth = item.bur_depth;
+		if(!isEmpty(item.elevation)){
+		 elevation = parseDouble(item.elevation);
+		}
+		if(!isEmpty(item.bur_depth)){
+		 bur_depth = parseDouble(item.bur_depth);
+		}
+		var district = item.district;
+		var address = item.address;
+		var completdate = item.completdate;
+		%>
+	,{"value": #{decode(subtype,"5439920","控制阀",""),json}, "row": #{row}, "col": 0}
+	,{"value": #{p_code,json} , "row": #{row}, "col": 1}
+	,{"value": #{decode(type,"W101310001","闸阀","W101310002","蝶阀","W101310003","球阀","W101310004","锥形阀","W101310005","逆止阀","W101310006","小阀门","W101310007","其他",""),json},"row": #{row}, "col": 2}
+	,{"value": #{caliber,json},"row": #{row}, "col": 3}
+	,{"value": #{decode(material,"W101120001","铜","W101120002","钢","W101120003","铁","W101120004","不锈钢","W101120005","其他","W101120006","未知",material),json}, "row": #{row}, "col": 4}
+	,{"value": #{decode(onoff_stats,"W101510001","开","W101510002","关","W101510003","未知",""),json}, "row": #{row}, "col": 5}
+	,{"value": #{decode(work_stats,"W101500001","正常","W101500002","不正常","W101500003","在建","W101500004","未通水","W101500005","不详",""),json}, "row": #{row}, "col": 6}
+	,{"value": #{elevation,json}, "row": #{row}, "col": 7}
+	,{"value": #{bur_depth,json}, "row": #{row}, "col": 8}
+
+
+	,{"value": #{district,json}, "row": #{row}, "col": 9}
+	,{"value": #{address,json}, "row": #{row}, "col": 10}
+	,{"value": #{completdate,json}, "row": #{row}, "col": 11}
+	<%	
+	row++;
+	}%>
+]

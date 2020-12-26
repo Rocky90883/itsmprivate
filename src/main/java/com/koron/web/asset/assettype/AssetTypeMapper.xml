@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koron.web.asset.assettype.AssetTypeMapper">
+  <resultMap id="BaseResultMap" type="com.koron.web.asset.assettype.bean.AssetTypeBean">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="orgId" jdbcType="VARCHAR" property="orgid" />
+    <result column="classCode" jdbcType="VARCHAR" property="classcode" />
+    <result column="parentId" jdbcType="VARCHAR" property="parentid" />
+    <result column="parentCode" jdbcType="VARCHAR" property="parentcode" />
+    <result column="isCatalog" jdbcType="INTEGER" property="iscatalog" />
+    <result column="typeCode" jdbcType="VARCHAR" property="typecode" />
+    <result column="typeName" jdbcType="VARCHAR" property="typename" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_account" jdbcType="VARCHAR" property="createAccount" />
+    <result column="create_name" jdbcType="VARCHAR" property="createName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_account" jdbcType="VARCHAR" property="updateAccount" />
+    <result column="update_name" jdbcType="VARCHAR" property="updateName" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, orgId, classCode, parentId, parentCode, isCatalog, typeCode, typeName, `status`, 
+    sort, create_time, create_account, create_name, update_time, update_account, update_name, 
+    remark
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from asset_type
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from asset_type
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="addassettype" parameterType="com.koron.web.asset.assettype.bean.AssetTypeBean" >
+    insert into asset_type
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orgid != null">
+        orgId,
+      </if>
+      <if test="classcode != null">
+        classCode,
+      </if>
+      <if test="parentid != null">
+        parentId,
+      </if>
+      <if test="parentcode != null">
+        parentCode,
+      </if>
+      <if test="iscatalog != null">
+        isCatalog,
+      </if>
+      <if test="typecode != null">
+        typeCode,
+      </if>
+      <if test="typename != null">
+        typeName,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createAccount != null">
+        create_account,
+      </if>
+      <if test="createName != null">
+        create_name,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateAccount != null">
+        update_account,
+      </if>
+      <if test="updateName != null">
+        update_name,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="orgid != null">
+        #{orgid,jdbcType=VARCHAR},
+      </if>
+      <if test="classcode != null">
+        #{classcode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentid != null">
+        #{parentid,jdbcType=VARCHAR},
+      </if>
+      <if test="parentcode != null">
+        #{parentcode,jdbcType=VARCHAR},
+      </if>
+      <if test="iscatalog != null">
+        #{iscatalog,jdbcType=INTEGER},
+      </if>
+      <if test="typecode != null">
+        #{typecode,jdbcType=VARCHAR},
+      </if>
+      <if test="typename != null">
+        #{typename,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createAccount != null">
+        #{createAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="createName != null">
+        #{createName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAccount != null">
+        #{updateAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="updateName != null">
+        #{updateName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.koron.web.asset.assettype.bean.AssetTypeBean">
+    update asset_type
+    <set>
+      <if test="orgid != null">
+        orgId = #{orgid,jdbcType=VARCHAR},
+      </if>
+      <if test="classcode != null">
+        classCode = #{classcode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentid != null">
+        parentId = #{parentid,jdbcType=VARCHAR},
+      </if>
+      <if test="parentcode != null">
+        parentCode = #{parentcode,jdbcType=VARCHAR},
+      </if>
+      <if test="iscatalog != null">
+        isCatalog = #{iscatalog,jdbcType=INTEGER},
+      </if>
+      <if test="typecode != null">
+        typeCode = #{typecode,jdbcType=VARCHAR},
+      </if>
+      <if test="typename != null">
+        typeName = #{typename,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createAccount != null">
+        create_account = #{createAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="createName != null">
+        create_name = #{createName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAccount != null">
+        update_account = #{updateAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="updateName != null">
+        update_name = #{updateName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+
+  <!-- 查询最大的子级code编号 -->
+  <select id="findMaxChild" resultType="java.lang.String">
+		SELECT
+		max(classcode) maxCode
+		FROM
+		asset_type
+		WHERE
+		classcode like CONCAT(#{classcode},'_____')
+	</select>
+
+  <select id="findAssetType" parameterType="com.koron.web.asset.assettype.bean.AssetTypeBean" resultType="com.koron.web.asset.assettype.bean.AssetTypeBean">
+    select a.*,b.typeName parentName
+    from asset_type a left join asset_type b on a.parentId=b.id
+    <where>
+      <if test="classcode == null or classcode !='all'">
+        and a.classcode LIKE CONCAT(#{classcode},'_____')
+      </if>
+      <if test="iscatalog != null and iscatalog ==0">
+        and a.isCatalog = 0
+      </if>
+    </where>
+    order by a.classCode
+  </select>
+
+  <select id="assetTypeSuperList" parameterType="com.koron.web.asset.assettype.bean.AssetTypeQueryBean" resultType="com.koron.web.asset.assettype.bean.AssetTypeBean">
+    select a.*,b.typeName parentName
+    from asset_type a left join asset_type b on a.parentId=b.id
+    <where>
+      <if test="classcode != null and classcode !='all'">
+        and a.classcode LIKE CONCAT(#{classcode},'_____')
+      </if>
+      <if test="iscatalog != null and iscatalog ==0">
+        and a.isCatalog = 0
+      </if>
+    </where>
+    order by a.classCode
+  </select>
+
+  <select id="queryList" parameterType="com.koron.web.asset.assettype.bean.AssetTypeQueryBean" resultType="com.koron.web.asset.assettype.bean.AssetTypeBean">
+    select a.*,b.typeName parentName
+    from asset_type a
+    left join asset_type b on a.parentId=b.id
+    <where>
+         1=1
+      <if test="typecode != null and typecode !=''">
+        and a.typeCode = #{typecode}
+      </if>
+      <if test="typename != null and typename !=''">
+        and a.typeName like CONCAT('%', #{typename}, '%')
+      </if>
+      <if test="parentid != null and parentid !=''">
+        and a.parentId = #{parentid}
+      </if>
+    </where>
+    order by a.classCode
+  </select>
+
+  <!-- 通过Code查询记录 -->
+  <select id="findAssetTypeByCode" resultType="com.koron.web.asset.assettype.bean.SelectBean">
+		SELECT
+		classcode, typeName ,id , parentId
+		FROM
+		asset_type x
+		WHERE
+		classcode = #{classcode}
+	</select>
+
+  <update id="updateAssetType"
+          parameterType="com.koron.web.asset.assettype.bean.AssetTypeBean">
+    update asset_type
+    <trim prefix="SET" suffixOverrides=",">
+      <if test="classcode != null and classcode != ''">
+        classCode=#{classcode},
+      </if>
+      <if test="typename != null and typename != ''">
+        typeName=#{typename},
+      </if>
+      <if test="typecode != null and typecode != ''">
+        typeCode=#{typecode},
+      </if>
+      <if test="parentid != null and parentid != ''">
+        parentId=#{parentid},
+      </if>
+      <if test="iscatalog != null">
+        isCatalog=#{iscatalog},
+      </if>
+      <if test="updateAccount != null and updateAccount != ''">
+        update_account=#{updateAccount},
+      </if>
+      <if test="updateTime != null and updateTime != ''">
+        update_time=date_format(#{updateTime},'%Y-%m-%d %T'),
+      </if>
+    </trim>
+    where id = #{id}
+  </update>
+
+<!--  选择分类 下拉框 非备件-->
+  <select id="selectAssetTypeList" resultType="com.koron.web.asset.assettype.bean.SelectBean">
+		SELECT classcode, typeName ,id , parentId
+		FROM asset_type
+		where isCatalog=1 and classCode not in(select classCode from asset_type where classCode like concat('0000100003','%'))
+	</select>
+
+  <!--  选择分类 下拉框 备件-->
+  <select id="selectAssetTypeListSpare" resultType="com.koron.web.asset.assettype.bean.SelectBean">
+		SELECT classcode, typeName ,id , parentId
+		FROM asset_type
+		where isCatalog=1 and classCode in(select classCode from asset_type where classCode like concat('0000100003','%'))
+	</select>
+
+</mapper>

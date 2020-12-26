@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koron.web.systemmanger.dept.DepartMapper">
+
+    <!-- 批量添加 -->
+    <insert parameterType="java.util.List" id="addDepartments">
+        INSERT INTO `tbldepartun`
+        (`name`,`code`,`parent_code`,`org_kind`,`business_kind`,`tree_type`,`description`,`shortname`,`mask`,`parentmask`,`link`)
+        VALUES
+        <foreach collection="list" item="li" separator=",">
+            (#{li.name},#{li.code},#{li.parentCode},#{li.orgKind},#{li.businessKind},#{li.treeType},
+            #{li.description},#{li.shortname},#{li.mask},#{li.parentmask},#{li.link})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        name= VALUES(`name`), code= VALUES(`code`),parent_code= VALUES(`parent_Code`),org_kind= VALUES(`org_kind`),business_kind= VALUES(`business_kind`),
+        tree_type= VALUES(`tree_Type`),description= VALUES(`description`), shortname= VALUES(`shortname`),
+        mask= VALUES(`mask`), parentmask= VALUES(`parentmask`), link= VALUES(`link`)
+    </insert>
+
+    <!-- 批量修改 -->
+    <update id="updateDepartments" parameterType="java.util.List" >
+        <foreach collection="list" item="it" index="index" open="" close="" separator=";">
+            UPDATE `tbldepartun`
+            <set>
+                `name`=#{it.name},`shortname`=#{it.shortname},`parent_code`=#{it.parentCode},
+                `org_kind`=#{it.orgKind},`business_kind`=#{it.businessKind},
+                `description`=#{it.description},`shortname`=#{it.shortname},`tree_type`=#{it.treeType}
+                ,`mask`=#{it.mask},`parentmask`=#{it.parentmask},`link`=#{it.link},`is_catalog`=#{it.isCatalog}
+            </set>
+            WHERE `code`=#{it.code}
+        </foreach>
+    </update>
+
+    <select id="newGetDepartmentTree" resultType="com.koron.web.systemmanger.dept.DepartunBean">
+        select * from tbldepartun where 1=1
+        <if test="parentCode!=null and parentCode!=''">and parent_code=#{parentCode}</if>
+    </select>
+
+    <!--全数据条件查询-->
+    <select  id="listAllcondition" parameterType="com.koron.web.systemmanger.dept.DepartunQueyBean"
+             resultType="com.koron.web.systemmanger.dept.DepartunBean">
+        select a.* from tbldepartun a where 1=1
+        <if test="parentCode !=null and name != ''">
+         and parent_code = #{parentCode}
+        </if>
+        <if test="name !=null and name != ''">
+         and (a.`name` like concat('%',#{name},'%') or a.`shortname` like concat('%',#{name},'%' ))
+        </if>
+        order by a.id
+    </select>
+</mapper>

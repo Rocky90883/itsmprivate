@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koron.web.systemmanger.model.SysModelMapper">
+
+  <resultMap id="BaseResultMap" type="com.koron.web.systemmanger.model.bean.SysModelBean">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="parent_code" jdbcType="VARCHAR" property="parentCode" />
+    <result column="model_name" jdbcType="VARCHAR" property="modelName" />
+    <result column="dto_code" jdbcType="VARCHAR" property="dtoCode" />
+    <result column="is_page" jdbcType="INTEGER" property="isPage" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_account" jdbcType="VARCHAR" property="createAccount" />
+    <result column="create_name" jdbcType="VARCHAR" property="createName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_account" jdbcType="VARCHAR" property="updateAccount" />
+    <result column="update_name" jdbcType="VARCHAR" property="updateName" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, parent_id, code, parent_code, model_name, is_page, `status`, sort, description, 
+    url, create_time, create_account, create_name, update_time, update_account, update_name
+  </sql>
+
+  <!-- 查询最大的子级code编号 -->
+  <select id="findMaxChild" resultType="java.lang.String">
+		SELECT
+		max(code) maxCode
+		FROM
+		sys_model
+		WHERE
+		code like CONCAT(#{code},'_____')
+	</select>
+
+  <select id="queryList" parameterType="com.koron.web.systemmanger.model.bean.SysModelQueryBean" resultMap="BaseResultMap">
+    select sys_model.*
+    from sys_model
+    where 1=1
+    <if test ="null != parentId">   and parent_id   =#{parentId    }</if>
+    <if test ="null != modelName">  and model_name  =#{modelName   }</if>
+    <if test ="null != dtoCode">    and dto_code    =#{dtoCode     }</if>
+    <if test ="null != code">       and code        =#{code        }</if>
+    <if test ="null != parentCode"> and parent_code =#{parentCode  }</if>
+    order by code asc
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select sys_model.*
+    from sys_model
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from sys_model
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.koron.web.systemmanger.model.bean.SysModelBean" useGeneratedKeys="true">
+    insert into sys_model
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="parentCode != null">
+        parent_code,
+      </if>
+      <if test="modelName != null">
+        model_name,
+      </if>
+      <if test="dtoCode != null">
+        dto_code,
+      </if>
+      <if test="isPage != null">
+        is_page,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createAccount != null">
+        create_account,
+      </if>
+      <if test="createName != null">
+        create_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="parentCode != null">
+        #{parentCode,jdbcType=VARCHAR},
+      </if>
+      <if test="modelName != null">
+        #{modelName,jdbcType=VARCHAR},
+      </if>
+      <if test="dtoCode != null">
+        #{dtoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isPage != null">
+        #{isPage,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createAccount != null">
+        #{createAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="createName != null">
+        #{createName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.koron.web.systemmanger.model.bean.SysModelBean">
+    update sys_model
+    <set>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="parentCode != null">
+        parent_code = #{parentCode,jdbcType=VARCHAR},
+      </if>
+      <if test="modelName != null">
+        model_name = #{modelName,jdbcType=VARCHAR},
+      </if>
+      <if test="dtoCode != null">
+        dto_code = #{dtoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isPage != null">
+        is_page = #{isPage,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAccount != null">
+        update_account = #{updateAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="updateName != null">
+        update_name = #{updateName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+
+
+  <!-- 根根据用户code获取所有权限 -->
+  <select id="getMoldelByStaffuncode" resultType="com.koron.web.systemmanger.model.bean.SysModelBean">
+    select sys_model.*
+    from role_model
+    left join sys_model on sys_model.id=role_model.model_id
+    where role_id in (select role_id from role_staffun where staffun_code=#{staffuncode})
+  </select>
+
+  <!-- 根据用户名获取模块权限 -->
+  <select id="getMoldelByStaffuncodeVo" resultType="com.koron.web.systemmanger.model.bean.SysModelVo">
+    select sys_model.*
+    from role_model
+    left join sys_model on sys_model.id=role_model.model_id
+    where sys_model.is_page=0 and role_id in (select role_id from role_staffun where staffun_code=#{staffuncode})
+  </select>
+
+
+  <!-- 根据用户名按钮权限 -->
+  <select id="getMoldelByStaffuncodefunVo" resultType="com.koron.web.systemmanger.model.bean.Func">
+    select case when b.id is null then '0' else '1' end as isJurisdiction, sys_model.parent_id as menuId ,sys_model.*
+    from sys_model
+        left join (
+        select sys_model.id
+        from role_model
+        left join sys_model on sys_model.id=role_model.model_id
+        where sys_model.is_page=1 and role_id in (select role_id from role_staffun where staffun_code=#{staffuncode})
+        ) b on b.id=sys_model.id
+    where sys_model.is_page=1
+  </select>
+
+<!--  <select id="getMoldelByStaffuncode"-->
+
+</mapper>

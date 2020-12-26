@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koron.web.systemmanger.roles.SysRoleMapper">
+
+  <resultMap id="BaseResultMap" type="com.koron.web.systemmanger.roles.bean.SysRoleBean">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="broper" jdbcType="VARCHAR" property="broper" />
+    <result column="is_sys" jdbcType="VARCHAR" property="isSys" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_account" jdbcType="VARCHAR" property="createAccount" />
+    <result column="create_name" jdbcType="VARCHAR" property="createName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_account" jdbcType="VARCHAR" property="updateAccount" />
+    <result column="update_name" jdbcType="VARCHAR" property="updateName" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, role_name, sort, description, `status`, create_time, create_account, create_name, 
+    update_time, update_account, update_name
+  </sql>
+
+  <select id="queryList" parameterType="com.koron.web.systemmanger.roles.bean.SysRoleQueryBean" resultMap="BaseResultMap">
+    select sys_role.*
+    from sys_role
+    where 1=1
+    <if test ="null != roleName">   and role_name   =#{roleName    }</if>
+    order by sys_role.sort asc
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select sys_role.*
+    from sys_role
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from sys_role
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.koron.web.systemmanger.roles.bean.SysRoleBean" useGeneratedKeys="true">
+    insert into sys_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="roleName != null">
+        role_name,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="isSys != null">
+        is_sys,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createAccount != null">
+        create_account,
+      </if>
+      <if test="createName != null">
+        create_name,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateAccount != null">
+        update_account,
+      </if>
+      <if test="updateName != null">
+        update_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="roleName != null">
+        #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="isSys != null">
+        #{isSys,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createAccount != null">
+        #{createAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="createName != null">
+        #{createName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAccount != null">
+        #{updateAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="updateName != null">
+        #{updateName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.koron.web.systemmanger.roles.bean.SysRoleBean">
+    update sys_role
+    <set>
+      <if test="roleName != null">
+        role_name = #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createAccount != null">
+        create_account = #{createAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="createName != null">
+        create_name = #{createName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAccount != null">
+        update_account = #{updateAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="updateName != null">
+        update_name = #{updateName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+<!-- 分配人员給角色-->
+  <insert parameterType="java.util.List" id="insertStaffuntoRole">
+    INSERT INTO role_staffun
+    (id, role_id, staffun_code)
+    VALUES
+    <foreach collection="roleStaffunEntity" item="li" separator=",">
+      (#{li.id},#{li.roleId},#{li.staffunCode})
+    </foreach>
+  </insert>
+
+  <!-- 分配模块菜单給角色-->
+  <insert parameterType="java.util.List" id="insertModeltoRole">
+    INSERT INTO role_model
+    (id, role_id, model_id)
+    VALUES
+    <foreach collection="roleModelEntity" item="li" separator=",">
+      (#{li.id},#{li.roleId},#{li.modelId})
+    </foreach>
+  </insert>
+
+<!--    根据角色查看人员-->
+    <select id="staffunListByroleId" parameterType="com.koron.web.systemmanger.roles.bean.SysRoleQueryBean" resultType="com.koron.web.systemmanger.roles.bean.RoleStaffunVo">
+        select ro.id as roleId,ro.role_name,un.name,a.staffun_code
+        from role_staffun a
+        join tblstaffun un on un.code=a.staffun_code
+        join sys_role ro on ro.id=a.role_id
+        where 1=1
+        <if test="id != null">
+            and a.role_id=#{id}
+        </if>
+        <if test="roleName != null">
+            and ro.role_name=#{roleName}
+        </if>
+    </select>
+
+  <!--    根据角色查看模块菜单-->
+    <select id="modelListByroleId" parameterType="com.koron.web.systemmanger.roles.bean.SysRoleQueryBean" resultType="com.koron.web.systemmanger.roles.bean.RoleModelVo">
+      select ro.id as roleId,ro.role_name,mo.model_name,a.model_id
+      from role_model a
+      join sys_model mo on mo.id=a.model_id
+      join sys_role ro on ro.id=a.role_id
+        where 1=1
+        <if test="id != null">
+            and a.role_id=#{id}
+        </if>
+        <if test="roleName != null">
+            and ro.role_name=#{roleName}
+        </if>
+    </select>
+
+    <delete id="removePersonRole" parameterType="com.koron.web.systemmanger.roles.bean.RoleStaffunVo">
+        delete from role_staffun
+        where role_id=#{roleId} and staffun_code=#{staffunCode}
+    </delete>
+
+    <delete id="removeAllPersonRole" parameterType="com.koron.web.systemmanger.roles.bean.RoleStaffunVo">
+        delete from role_staffun
+        where role_id=#{roleId}
+    </delete>
+
+
+  <!--    根据人员code查看角色-->
+  <select id="getRoleBystaffuncode" parameterType="java.lang.String" resultType="com.koron.web.systemmanger.roles.bean.SysRoleBean">
+    select sys_role.*
+    from role_staffun
+    left join sys_role on sys_role.id=role_staffun.role_id
+    WHERE role_staffun.staffun_code=#{staffunCode}
+   </select>
+</mapper>

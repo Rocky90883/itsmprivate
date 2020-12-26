@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Insert title here</title>
+
+  <link rel="stylesheet" href="css/appvoralCSS.css">
+  <link rel="stylesheet" href="css/ui-dialog.css">
+  <link rel="stylesheet" href="css/fontello.css">
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/dialogmin.js"></script>
+  <script type="text/javascript" src="js/sea.js"></script>
+  <script type="text/javascript" src="js/selector.js"></script>
+  <style>
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      background: #b1d8ff;
+    }
+
+    ::-webkit-scrollbar-track {
+      border-radius: 10px;
+      background: #e6e6e6;
+    }
+
+    #remark .submitOk {
+      display: inline-block;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="auditInfo"></div>
+  <!--<div>1236</div>-->
+</body>
+<script type="text/javascript">
+  var ctxPath = "";
+  // var ctxPath = '../../laboratory'
+  var closeDailog = false;
+  // var procInstId = "8334e6bdd16f47c796896cc0272b6422";
+  // var procInstType = "scrapped";
+  var procInstId = getUrlField('procInstId');
+  var procInstType = getUrlField('procInstType');
+  var id = getUrlField('id');
+  // var baseUrl = getUrlField('baseUrl');
+  $(function () {
+    //默认显示工作流面板
+
+
+    // var from = null;
+    // var path = basePath();
+    // var path = baseUrl;
+    // var path = "/";
+    // path += "static/";
+    // path = "http://192.168.49.140:8636/static/";//提交需注释
+    // var url = path + "/group/getFormData.htm?" + Math.floor(Math.random() * 100000);
+    var url = "/workflow/workflowsubmitpreMy.htm" ;
+
+    var data = {
+      "procInstId": procInstId,
+      "procInstType": procInstType
+    }
+    $.ajax({
+      type: "get",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      url: url,
+      dataType: "html",
+      data: JSON.stringify(data),
+      data: data,
+      success: function (reponseData) {
+        // var data1 = reponse;
+        $("#auditInfo").html(reponseData);
+        $(".approval-content > ._showbutton").click();
+
+        // $("#auditInfo .approval-list").show();
+        //工作流显示隐藏点击
+        // $("._showbutton").click(function () {
+        //   $("#auditInfo .approval-list").toggle();
+        // })
+        // $("#auditInfo ._showbutton").toggleClass('_hide').removeClass("icon-plus-circle").addClass("icon-minus-circle");
+        // // 如果是审核信息 隐藏掉操作栏和处理意见行
+        // if (data.fromModel == 'look') {
+        //   $("#auditInfo .row.approval-table").next(".row").hide();
+        //   $("#auditInfo .row.processing-suggestions").hide();
+        //   $("#auditInfo .row.approval-table").show();
+        //   $("#auditInfo .approval-history .icon-check-empty").addClass('icon-check');
+        // }
+        // window.parent.postMessage({
+        //   cmd: 'loadingHide',
+        //   params: {
+        //     success: true,
+        //   }
+        // }, '*');
+      },
+      error: function (e) {
+
+      }
+
+    });
+
+    // 这下面的click方法，都是做高度自适应用的
+    $("#workflowsvg").click(function () {
+      alert(1)
+      setTimeout(function () {
+        // workflow.sendHeight($('#auditInfo').height())
+        sendFlowHeight($('#auditInfo').height())
+      }, 500)
+    });
+    $(".approval-history").on("click", ".icon-check-empty", function () {
+      setTimeout(function () {
+        // workflow.sendHeight($('#auditInfo').height())
+        sendFlowHeight($('#auditInfo').height())
+      }, 500)
+    });
+    $(".approval-content > ._showbutton").click(function () {
+      // workflow.sendHeight($('#auditInfo').height())
+      sendFlowHeight($('#auditInfo').height())
+    })
+  });
+
+  function sendFlowHeight(height) {
+    window.parent.postMessage({
+      cmd: 'height',
+      params: {
+        height: h
+      }
+    }, '*')
+  }
+
+  function approve(data) {
+    console.log(data)
+    // let {
+    //   __operation,
+    //   __subinfo,
+    //   __comment,
+    //   taskid,
+    //   __subuser
+    // } = data;
+
+    let __operation = data.__operation
+    let __subinfo = data.__subinfo
+    let __comment = data.__comment
+    let taskid = data.taskid
+    let __subuser = data.__subuser
+
+    // var param = {
+    //   procInstId: procInstId,
+    //   procInstType: procInstType,
+    //   taskId: taskid,
+    //   comment: __comment,
+    //   lastTaskId: __subinfo,
+    //   operation: __operation,
+    //   userCodes: __subuser
+    // }
+
+    var param = {};
+    param["procInstId"] = procInstId;
+    param["procInstType"] = procInstType;
+    // param["taskId"] = taskid;
+    param["comment"] = __comment;
+    param["subinfo"] = __subinfo;
+    param["operation"] = __operation;
+    param["subuser"] = __subuser;
+
+
+    // $("#loadingImg").show(); //点击提交按钮后加载中图片出现
+    // return;
+    // var path = basePath();
+    // var path = "/";
+    // var path = baseUrl;
+    // path = "http://192.168.49.140:8636/static/";//提交需注释
+    // var url = path + "/group/doApprove.htm";
+    var url = "/workflow/workflowsubmit.htm";
+
+    $.ajax({
+      type: "post",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      url: url,
+      dataType: "json",
+      // data: param,
+      data:JSON.stringify(param),
+      success: function (reponse) {
+        console.log(reponse);
+        var code = reponse.code;
+        // $("#loadingImg").hide(); //成功后 加载隐藏
+
+        window.parent.postMessage({
+          cmd: 'agreeCheck',
+          params: {
+            code: code,
+            msg: reponse.description
+          }
+        }, '*');
+
+      },
+      error: function (e) {
+        $("#loadingImg").hide(); //成功后 加载隐藏
+      }
+    });
+  }
+  function basePath() {
+    //获取当前网址，如： http://localhost:8080/ems/Pages/Basic/Person.jsp
+    var curWwwPath = window.document.location.href;
+    //获取主机地址之后的目录，如： /ems/Pages/Basic/Person.jsp
+    var pathName = window.document.location.pathname;
+    var pos = curWwwPath.indexOf(pathName);
+    //获取主机地址，如： http://localhost:8080
+    var localhostPath = curWwwPath.substring(0, pos);
+    //获取带"/"的项目名，如：/ems
+    var basePath = localhostPath + "/";
+    // basePath=process.env.baseUrl;
+    return basePath;
+  };
+
+  String.prototype.replaceAll = function (reallyDo, replaceWith, ignoreCase) {
+    if (!RegExp.prototype.isPrototypeOf(reallyDo)) {
+      return this.replace(new RegExp(reallyDo, (ignoreCase ? "gi" : "g")), replaceWith);
+    } else {
+      return this.replace(reallyDo, replaceWith);
+    }
+  }
+
+  function getUrlField(field) {
+    return getFieldByUrl(window.location.search, field);
+  }
+  //获取url地址后面的参数
+  function getFieldByUrl(url, field) {
+    var reg = new RegExp("(^|&|\\?)" + field + "=([^&]*)(&|$)", "i");
+    var r = url.substr(1).match(reg);
+    if (r != null)
+      return decodeURI(r[2]);
+    return "";
+  };
+
+
+</script>
+
+</html>

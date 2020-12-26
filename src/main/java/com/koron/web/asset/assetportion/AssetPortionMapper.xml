@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koron.web.asset.assetportion.AssetPortionMapper">
+
+  <resultMap id="BaseResultMap" type="com.koron.web.asset.assetportion.bean.AssetPortionBean">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="orgId" jdbcType="VARCHAR" property="orgid" />
+    <result column="portion_bill_no" jdbcType="VARCHAR" property="portionBillNo" />
+    <result column="depat_code" jdbcType="VARCHAR" property="depatCode" />
+    <result column="register_id" jdbcType="VARCHAR" property="registerId" />
+    <result column="asset_type_id" jdbcType="VARCHAR" property="assetTypeId" />
+    <result column="goods_model" jdbcType="VARCHAR" property="goodsModel" />
+    <result column="portion_qty" jdbcType="DOUBLE" property="portionQty" />
+    <result column="bill_date" jdbcType="VARCHAR" property="billDate" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_account" jdbcType="VARCHAR" property="createAccount" />
+    <result column="create_name" jdbcType="VARCHAR" property="createName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_account" jdbcType="VARCHAR" property="updateAccount" />
+    <result column="update_name" jdbcType="VARCHAR" property="updateName" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="registBillNo" jdbcType="VARCHAR" property="registBillNo" />
+    <result column="assetTypeName" jdbcType="VARCHAR" property="assetTypeName" />
+    <result column="depatName" jdbcType="VARCHAR" property="depatName" />
+    <collection property="portionDet" ofType="com.koron.web.asset.assetportiondet.bean.AssetPortionDetBean">
+      <id column="detid" jdbcType="VARCHAR" property="id" />
+      <result column="f_ref" jdbcType="VARCHAR" property="fRef" />
+      <result column="source_id" jdbcType="VARCHAR" property="sourceId" />
+      <result column="assets_number" jdbcType="VARCHAR" property="assetsNumber" />
+      <result column="emp_id" jdbcType="VARCHAR" property="empId" />
+    </collection>
+  </resultMap>
+
+  <sql id="listCondition">
+    <where>
+      1=1
+      <if test ="null != depatCode     and depatCode     !='' "> and asset_portion.depat_code     =#{depatCode    }</if>
+      <if test ="null != assetTypeId   and assetTypeId   !='' "> and asset_portion.asset_type_id  =#{assetTypeId  }</if>
+      <if test ="null != portionBillNo and portionBillNo !='' "> and asset_portion.portion_bill_no like CONCAT('%', #{portionBillNo}, '%')</if>
+      <if test ="null != goodsModel    and goodsModel    !='' "> and asset_portion.goods_model     like CONCAT('%', #{goodsModel}, '%')</if>
+      <if test ="null != registBillNo  and registBillNo  !='' "> and r.bill_no                     like CONCAT('%', #{registBillNo}, '%')</if>
+      <if test="beginDate  != null and beginDate != ''">
+        and DATE_FORMAT( bill_date, '%Y-%m-%d') &gt;= DATE_FORMAT(#{beginDate}, '%Y-%m-%d')
+      </if>
+      <if test="endDate != null and endDate != ''">
+        and DATE_FORMAT( bill_date, '%Y-%m-%d') &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+      </if>
+    </where>
+  </sql>
+
+  <select id="queryList" parameterType="com.koron.web.asset.assetportion.bean.AssetPortionQueryBean" resultMap="BaseResultMap">
+    select
+    asset_portion.*,t.typeName as assetTypeName,d.name as depatName,r.bill_no as registBillNo,det.id as detid,det.f_ref,det.emp_id,det.source_id,det.assets_number
+    from asset_portion
+    left join asset_portion_det det on det.f_ref=asset_portion.id
+    left join asset_type t on t.id=asset_portion.asset_type_id
+    left join tbldepartun d on d.code=asset_portion.depat_code
+    left join asset_regist r on r.id=asset_portion.register_id
+    <include refid="listCondition"></include>
+    order by asset_portion.bill_date desc
+  </select>
+
+
+  <sql id="Base_Column_List">
+    id, orgId, portion_bill_no, depat_code, register_id, asset_type_id, goods_model, 
+    portion_qty, bill_date, create_time, create_account, create_name, update_time, update_account, 
+    update_name, remark,t.typeName as assetTypeName,d.name as depatName
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    asset_portion.*,t.typeName as assetTypeName,d.name as depatName,r.bill_no as registBillNo
+    from asset_portion
+    left join asset_type t on t.id=asset_portion.asset_type_id
+    left join tbldepartun d on d.code=asset_portion.depat_code
+    left join asset_regist r on r.id=asset_portion.register_id
+    where asset_portion.id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from asset_portion
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.koron.web.asset.assetportion.bean.AssetPortionBean" useGeneratedKeys="true">
+    insert into asset_portion
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orgid != null">
+        orgId,
+      </if>
+      <if test="portionBillNo != null">
+        portion_bill_no,
+      </if>
+      <if test="depatCode != null">
+        depat_code,
+      </if>
+      <if test="registerId != null">
+        register_id,
+      </if>
+      <if test="assetTypeId != null">
+        asset_type_id,
+      </if>
+      <if test="goodsModel != null">
+        goods_model,
+      </if>
+      <if test="portionQty != null">
+        portion_qty,
+      </if>
+      <if test="billDate != null">
+        bill_date,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createAccount != null">
+        create_account,
+      </if>
+      <if test="createName != null">
+        create_name,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateAccount != null">
+        update_account,
+      </if>
+      <if test="updateName != null">
+        update_name,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="orgid != null">
+        #{orgid,jdbcType=VARCHAR},
+      </if>
+      <if test="portionBillNo != null">
+        #{portionBillNo,jdbcType=VARCHAR},
+      </if>
+      <if test="depatCode != null">
+        #{depatCode,jdbcType=VARCHAR},
+      </if>
+      <if test="registerId != null">
+        #{registerId,jdbcType=VARCHAR},
+      </if>
+      <if test="assetTypeId != null">
+        #{assetTypeId,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsModel != null">
+        #{goodsModel,jdbcType=VARCHAR},
+      </if>
+      <if test="portionQty != null">
+        #{portionQty,jdbcType=DOUBLE},
+      </if>
+      <if test="billDate != null">
+        #{billDate,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createAccount != null">
+        #{createAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="createName != null">
+        #{createName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAccount != null">
+        #{updateAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="updateName != null">
+        #{updateName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.koron.web.asset.assetportion.bean.AssetPortionBean">
+    update asset_portion
+    <set>
+      <if test="orgid != null">
+        orgId = #{orgid,jdbcType=VARCHAR},
+      </if>
+      <if test="portionBillNo != null">
+        portion_bill_no = #{portionBillNo,jdbcType=VARCHAR},
+      </if>
+      <if test="depatCode != null">
+        depat_code = #{depatCode,jdbcType=VARCHAR},
+      </if>
+      <if test="registerId != null">
+        register_id = #{registerId,jdbcType=VARCHAR},
+      </if>
+      <if test="assetTypeId != null">
+        asset_type_id = #{assetTypeId,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsModel != null">
+        goods_model = #{goodsModel,jdbcType=VARCHAR},
+      </if>
+      <if test="portionQty != null">
+        portion_qty = #{portionQty,jdbcType=DOUBLE},
+      </if>
+      <if test="billDate != null">
+        bill_date = #{billDate,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createAccount != null">
+        create_account = #{createAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="createName != null">
+        create_name = #{createName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAccount != null">
+        update_account = #{updateAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="updateName != null">
+        update_name = #{updateName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

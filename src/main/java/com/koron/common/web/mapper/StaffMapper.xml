@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koron.common.web.mapper.StaffMapper">
+
+
+	<!--<select id="getAllStaff" parameterType="com.koron.web.systemmanger.user.bean.UserInfoQueryBean" resultType="com.koron.common.bean.StaffBean">-->
+		<!--SELECT * from tblstaff  where 1=1-->
+        <!--<if test="name != null and name != ''">-->
+            <!--and name = #{name}-->
+        <!--</if>-->
+	<!--</select>-->
+
+
+
+	<select id="regionList"
+		resultType="com.koron.web.systemmanger.dictionary.bean.Region">
+		SELECT a.id,a.region_code regionCode,region_name regionName from gdh_data_dictionary a  where 1=1
+	<if test="_parameter !=null and _parameter != ''">
+		 and a.orgId = #{_parameter}
+	</if>
+	<if test="_parameter ==null or _parameter == ''">
+		 and (a.orgId is null or a.orgId = '')
+	</if>
+	</select>
+	
+	
+	<insert id="regionAdd" parameterType="com.koron.web.systemmanger.dictionary.bean.Region">
+		insert into gdh_data_dictionary 
+		(id,orgId,region_code,region_name)
+		values (#{id},#{orgId},#{regionCode},#{regionName})
+	</insert>
+	
+
+	<update id="regionUpdate" parameterType="com.koron.web.systemmanger.dictionary.bean.Region">
+		update gdh_data_dictionary set region_code=#{regionCode},region_name=#{regionName} where id = #{id}
+	</update>
+	
+
+	<delete id ="regionDelete" parameterType="com.koron.web.systemmanger.dictionary.bean.Region">
+		delete from gdh_data_dictionary where id=#{id}
+	</delete>
+	
+	<select id="paramList" parameterType="com.koron.web.systemmanger.dictionary.bean.Region"
+		resultType="com.koron.web.systemmanger.dictionary.bean.Parameter">
+		SELECT a.id,a.dictId,a.parameter_name as parameterName,a.parameter_value parameterValue from gdh_data_dictionary_detail a  where a.dictId=#{id}
+	
+	</select>
+	
+	<select id="paramListByCode" parameterType="string"
+		resultType="com.koron.web.systemmanger.dictionary.bean.Parameter">
+		SELECT a.id,a.dictId,a.parameter_name as parameterName,a.parameter_value parameterValue from gdh_data_dictionary_detail a 
+		join gdh_data_dictionary b on a.dictId = b.id
+		 where b.region_code=#{_parameter}
+	
+	</select>
+	
+	
+	<insert id="paramAdd" parameterType="com.koron.web.systemmanger.dictionary.bean.Parameter">
+		insert into gdh_data_dictionary_detail 
+		(id,dictId,parameter_name,parameter_value)
+		values (#{id},#{dictId},#{parameterName},#{parameterValue})
+	</insert>
+	
+
+	<update id="paramUpdate" parameterType="com.koron.web.systemmanger.dictionary.bean.Parameter">
+		update gdh_data_dictionary_detail set parameter_name=#{parameterName},parameter_value=#{parameterValue} where id = #{id}
+	</update>
+	
+
+	<delete id ="paramDelete" parameterType="com.koron.web.systemmanger.dictionary.bean.Parameter">
+		delete from gdh_data_dictionary_detail where id=#{id}
+	</delete>
+	
+	<delete id ="paramDeleteByDictId" parameterType="string">
+		delete from gdh_data_dictionary_detail where dictId=#{_parameter}
+	</delete>
+
+
+
+</mapper>

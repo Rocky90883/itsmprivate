@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koron.web.workflowUtils.mapper.BaseWorkflowMapper">
+
+  <!-- 根据用户名获取code -->
+  <select id="getUserCode" resultType="java.lang.String">
+    SELECT workflow_code FROM tblstaffun WHERE
+    code in
+    <foreach collection="array" open="(" separator="," close=")" item="codes">
+      #{codes}
+    </foreach>
+  </select>
+
+
+  <!-- 根据用户名获取code -->
+  <select id="getviewdraft" parameterType="com.koron.web.workflow.bean.ViewEnableQueryBean" resultType="com.koron.web.workflow.bean.ViewEnableQueryBean">
+    SELECT workflow_code FROM tblstaffun WHERE
+    code in
+    <foreach collection="array" open="(" separator="," close=")" item="codes">
+      #{codes}
+    </foreach>
+  </select>
+
+</mapper>

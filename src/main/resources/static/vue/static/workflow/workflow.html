@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Insert title here</title>
+
+  <link rel="stylesheet" href="css/appvoralCSS.css">
+  <link rel="stylesheet" href="css/ui-dialog.css">
+  <link rel="stylesheet" href="css/fontello.css">
+  <link rel="stylesheet" href="css/selector.css">
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/dialogmin.js"></script>
+  <script type="text/javascript" src="js/sea.js"></script>
+  <script type="text/javascript" src="js/selector.js"></script>
+  <style>
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      background: #b1d8ff;
+    }
+
+    ::-webkit-scrollbar-track {
+      border-radius: 10px;
+      background: #e6e6e6;
+    }
+
+    #remark .submitOk {
+      display: inline-block;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="auditInfo"></div>
+</body>
+<script type="text/javascript">
+
+  $(function () {
+    window.parent.postMessage({
+      cmd: 'loadSure',
+      params: {}
+    }, '*')
+  })
+
+  function sendFlowHeight(height) {
+    window.parent.postMessage({
+      cmd: 'height',
+      params: {
+        height: h
+      }
+    }, '*')
+  }
+  function approve(data) {
+    console.log(data);
+    var param = {
+      comment: data.__comment,
+      operation: data.__operation,
+      procInstType: data.template,
+      subinfo: data.__subinfo
+    }
+
+    // 主页面进行提交请求，避免不出现loading现象
+    window.parent.postMessage({
+      cmd: 'callBackSubmit',
+      params: {
+        data: param,
+        msg: 'goSubmit'
+      }
+    }, '*');
+    return;
+  }
+  //赋值HTML展示流程图
+  function setFlowHtml(data) {
+    try {
+      $("#auditInfo").html(data)
+      //展开流程管理
+      $(".approval-content > ._showbutton").click()
+      //显示审批记录
+      $(".approval-history .icon-check-empty").click()
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+</script>
+
+</html>

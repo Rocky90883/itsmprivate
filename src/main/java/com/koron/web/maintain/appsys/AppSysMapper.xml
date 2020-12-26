@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koron.web.maintain.appsys.AppSysMapper">
+
+  <resultMap id="BaseResultMap" type="com.koron.web.maintain.appsys.bean.AppSysBean">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="orgId" jdbcType="VARCHAR" property="orgid" />
+    <result column="sourceId" jdbcType="VARCHAR" property="sourceid" />
+    <result column="assets_number" jdbcType="VARCHAR" property="assetsNumber" />
+    <result column="sys_name" jdbcType="VARCHAR" property="sysName" />
+    <result column="build_date" jdbcType="VARCHAR" property="buildDate" />
+    <result column="plan_date" jdbcType="VARCHAR" property="planDate" />
+    <result column="online_date" jdbcType="VARCHAR" property="onlineDate" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="emp_name" jdbcType="VARCHAR" property="empName" />
+    <result column="annex" jdbcType="VARCHAR" property="annex" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_account" jdbcType="VARCHAR" property="createAccount" />
+    <result column="create_name" jdbcType="VARCHAR" property="createName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_account" jdbcType="VARCHAR" property="updateAccount" />
+    <result column="update_name" jdbcType="VARCHAR" property="updateName" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="comName" jdbcType="VARCHAR" property="comName" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, orgId, sourceId, assets_number, sys_name, build_date, plan_date, company_id, 
+    phone, emp_name, annex, create_time, create_account, create_name, update_time, update_account, 
+    update_name, remark
+  </sql>
+
+  <select id="queryList" parameterType="com.koron.web.workorder.msgapp.bean.MsgappQueryBean" resultMap="BaseResultMap">
+    select tblcompany.com_full_name as comName,app_sys.*
+    from app_sys
+    left join tblcompany on tblcompany.id=app_sys.company_id
+    where 1=1
+    <if test="beginDate  != null and beginDate != ''">
+      and DATE_FORMAT( plan_date, '%Y-%m-%d') &gt;= DATE_FORMAT(#{beginDate}, '%Y-%m-%d')
+    </if>
+    <if test="endDate != null and endDate != ''">
+      and DATE_FORMAT( plan_date, '%Y-%m-%d') &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    </if>
+    <if test="empName != null and empName !=''">
+      and app_sys.emp_name like CONCAT('%', #{empName}, '%')
+    </if>
+    <if test="sysName != null and sysName !=''">
+      and app_sys.sys_name like CONCAT('%', #{sysName}, '%')
+    </if>
+    order by app_sys.create_time desc
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select tblcompany.com_full_name as comName,app_sys.*
+    from app_sys
+    left join tblcompany on tblcompany.id=app_sys.company_id
+    where app_sys.id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from app_sys
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.koron.web.maintain.appsys.bean.AppSysBean" useGeneratedKeys="true">
+    insert into app_sys
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orgid != null">
+        orgId,
+      </if>
+      <if test="sourceid != null">
+        sourceId,
+      </if>
+      <if test="assetsNumber != null">
+        assets_number,
+      </if>
+      <if test="sysName != null">
+        sys_name,
+      </if>
+      <if test="buildDate != null">
+        build_date,
+      </if>
+      <if test="onlineDate != null">
+        online_date,
+      </if>
+      <if test="planDate != null">
+        plan_date,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="empName != null">
+        emp_name,
+      </if>
+      <if test="annex != null">
+        annex,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createAccount != null">
+        create_account,
+      </if>
+      <if test="createName != null">
+        create_name,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateAccount != null">
+        update_account,
+      </if>
+      <if test="updateName != null">
+        update_name,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="orgid != null">
+        #{orgid,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceid != null">
+        #{sourceid,jdbcType=VARCHAR},
+      </if>
+      <if test="assetsNumber != null">
+        #{assetsNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="sysName != null">
+        #{sysName,jdbcType=VARCHAR},
+      </if>
+      <if test="buildDate != null">
+        #{buildDate,jdbcType=VARCHAR},
+      </if>
+      <if test="onlineDate != null">
+        #{onlineDate,jdbcType=VARCHAR},
+      </if>
+      <if test="planDate != null">
+        #{planDate,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="empName != null">
+        #{empName,jdbcType=VARCHAR},
+      </if>
+      <if test="annex != null">
+        #{annex,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createAccount != null">
+        #{createAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="createName != null">
+        #{createName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.koron.web.maintain.appsys.bean.AppSysBean">
+    update app_sys
+    <set>
+      <if test="orgid != null">
+        orgId = #{orgid,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceid != null">
+        sourceId = #{sourceid,jdbcType=VARCHAR},
+      </if>
+      <if test="assetsNumber != null">
+        assets_number = #{assetsNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="sysName != null">
+        sys_name = #{sysName,jdbcType=VARCHAR},
+      </if>
+      <if test="buildDate != null">
+        build_date = #{buildDate,jdbcType=VARCHAR},
+      </if>
+      <if test="onlineDate != null">
+        online_date = #{onlineDate,jdbcType=VARCHAR},
+      </if>
+      <if test="planDate != null">
+        plan_date = #{planDate,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="empName != null">
+        emp_name = #{empName,jdbcType=VARCHAR},
+      </if>
+      <if test="annex != null">
+        annex = #{annex,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createAccount != null">
+        create_account = #{createAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="createName != null">
+        create_name = #{createName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAccount != null">
+        update_account = #{updateAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="updateName != null">
+        update_name = #{updateName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

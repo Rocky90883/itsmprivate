@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koron.web.workorder.msgapp.MsgappMapper">
+
+  <resultMap id="BaseResultMap" type="com.koron.web.workorder.msgapp.bean.MsgappBean">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="org_id" jdbcType="VARCHAR" property="orgId" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="bill_date" jdbcType="VARCHAR" property="billDate" />
+    <result column="employee_id" jdbcType="VARCHAR" property="employeeId" />
+    <result column="depat_code" jdbcType="VARCHAR" property="depatCode" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="source__id" jdbcType="VARCHAR" property="sourceId" />
+    <result column="apptype" jdbcType="INTEGER" property="apptype" />
+    <result column="app_content" jdbcType="VARCHAR" property="appContent" />
+    <result column="over_time" jdbcType="TIMESTAMP" property="overTime" />
+    <result column="score" jdbcType="DOUBLE" property="score" />
+    <result column="annex" jdbcType="VARCHAR" property="annex" />
+    <result column="workflowid" jdbcType="VARCHAR" property="workflowid" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="stage" jdbcType="VARCHAR" property="stage" />
+    <result column="auditor" jdbcType="VARCHAR" property="auditor" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_account" jdbcType="VARCHAR" property="createAccount" />
+    <result column="create_name" jdbcType="VARCHAR" property="createName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_account" jdbcType="VARCHAR" property="updateAccount" />
+    <result column="update_name" jdbcType="VARCHAR" property="updateName" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="auditorName" jdbcType="VARCHAR" property="auditorName" />
+    <result column="depatName" jdbcType="VARCHAR" property="depatName" />
+    <result column="staffunName" jdbcType="VARCHAR" property="staffunName" />
+    <result column="assetTypeName" jdbcType="VARCHAR" property="assetTypeName" />
+    <result column="goodsModel" jdbcType="VARCHAR" property="goodsModel" />
+    <result column="assetsNumber" jdbcType="VARCHAR" property="assetsNumber" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, org_id, order_no, bill_date, employee_id, depat_code, source__id, apptype, app_content,
+    over_time, score, annex, workflowid, `status`, stage, auditor, create_time, create_account,
+    create_name, update_time, update_account, update_name, remark
+  </sql>
+
+  <select id="queryList" parameterType="com.koron.web.workorder.msgapp.bean.MsgappQueryBean" resultMap="BaseResultMap">
+    select s.name as staffunName,d.name as depatName,ws.name as auditorName,asstype.typeName as assetTypeName,t.goods_model as goodsModel
+    ,t.assets_number as assetsNumber,msgapp.*
+    from msgapp
+    left join tblstaffun s on s.code=msgapp.employee_id
+    left join tbldepartun d on d.code=msgapp.depat_code
+    left join tblstaffun ws on ws.workflow_code=msgapp.auditor
+    left join assets t on t.id=msgapp.source__id
+    left join asset_type asstype on asstype.id=t.asset_type_id
+    where 1=1 and remove_flag = 0
+    <if test="beginDate  != null and beginDate != ''">
+      and DATE_FORMAT( bill_date, '%Y-%m-%d') &gt;= DATE_FORMAT(#{beginDate}, '%Y-%m-%d')
+    </if>
+    <if test="endDate != null and endDate != ''">
+      and DATE_FORMAT( bill_date, '%Y-%m-%d') &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    </if>
+    <if test="staffunName != null and staffunName !=''">
+      and s.name like CONCAT('%', #{staffunName}, '%')
+    </if>
+    <if test="depatName != null and depatName !=''">
+      and d.name like CONCAT('%', #{depatName}, '%')
+    </if>
+    <if test="orderNo != null and orderNo !=''">
+      and msgapp.order_no like CONCAT('%', #{orderNo}, '%')
+    </if>
+    <if test="apptype != null ">
+      and msgapp.apptype =#{apptype,jdbcType=INTEGER}
+    </if>
+    <if test="logincode != null and logincode!='' and broper!='all'">
+      and (msgapp.create_account = #{logincode,jdbcType=VARCHAR} || msgapp.employee_id = #{logincode,jdbcType=VARCHAR})
+    </if>
+    order by msgapp.bill_date desc,msgapp.create_time desc
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select s.name as staffunName,d.name as depatName,ws.name as auditorName,asstype.typeName as assetTypeName,t.goods_model as goodsModel
+    ,t.assets_number as assetsNumber,msgapp.*
+    from msgapp
+    left join tblstaffun s on s.code=msgapp.employee_id
+    left join tbldepartun d on d.code=msgapp.depat_code
+    left join tblstaffun ws on ws.workflow_code=msgapp.auditor
+    left join assets t on t.id=msgapp.source__id
+    left join asset_type asstype on asstype.id=t.asset_type_id
+    where msgapp.id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from msgapp
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.koron.web.workorder.msgapp.bean.MsgappBean" useGeneratedKeys="true">
+    insert into msgapp
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orgId != null">
+        org_id,
+      </if>
+      <if test="orderNo != null">
+        order_no,
+      </if>
+      <if test="billDate != null">
+        bill_date,
+      </if>
+      <if test="employeeId != null">
+        employee_id,
+      </if>
+      <if test="depatCode != null">
+        depat_code,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="sourceId != null">
+        source__id,
+      </if>
+      <if test="apptype != null">
+        apptype,
+      </if>
+      <if test="appContent != null">
+        app_content,
+      </if>
+      <if test="overTime != null">
+        over_time,
+      </if>
+      <if test="score != null">
+        score,
+      </if>
+      <if test="annex != null">
+        annex,
+      </if>
+      <if test="workflowid != null">
+        workflowid,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="stage != null">
+        stage,
+      </if>
+      <if test="auditor != null">
+        auditor,
+      </if>
+      <if test="removeFlag != null">
+        remove_flag,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createAccount != null">
+        create_account,
+      </if>
+      <if test="createName != null">
+        create_name,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null">
+        #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="billDate != null">
+        #{billDate,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeId != null">
+        #{employeeId,jdbcType=VARCHAR},
+      </if>
+      <if test="depatCode != null">
+        #{depatCode,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceId != null">
+        #{sourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="apptype != null">
+        #{apptype,jdbcType=INTEGER},
+      </if>
+      <if test="appContent != null">
+        #{appContent,jdbcType=VARCHAR},
+      </if>
+      <if test="overTime != null">
+        #{overTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="score != null">
+        #{score,jdbcType=DOUBLE},
+      </if>
+      <if test="annex != null">
+        #{annex,jdbcType=VARCHAR},
+      </if>
+      <if test="workflowid != null">
+        #{workflowid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="stage != null">
+        #{stage,jdbcType=VARCHAR},
+      </if>
+      <if test="auditor != null">
+        #{auditor,jdbcType=VARCHAR},
+      </if>
+      <if test="removeFlag != null">
+        #{removeFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createAccount != null">
+        #{createAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="createName != null">
+        #{createName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.koron.web.workorder.msgapp.bean.MsgappBean">
+    update msgapp
+    <set>
+      <if test="orgId != null">
+        org_id = #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="billDate != null">
+        bill_date = #{billDate,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeId != null">
+        employee_id = #{employeeId,jdbcType=VARCHAR},
+      </if>
+      <if test="depatCode != null">
+        depat_code = #{depatCode,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceId != null">
+        source__id = #{sourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="apptype != null">
+        apptype= #{apptype,jdbcType=INTEGER},
+      </if>
+      <if test="appContent != null">
+        app_content = #{appContent,jdbcType=VARCHAR},
+      </if>
+      <if test="overTime != null">
+        over_time = #{overTime,jdbcType=TIMESTAMP},
+      </if>
+<!--      <if test="score != null">-->
+<!--        score = #{score,jdbcType=DOUBLE},-->
+<!--      </if>-->
+<!--      <if test="annex != null">-->
+<!--        annex = #{annex,jdbcType=VARCHAR},-->
+<!--      </if>-->
+<!--      <if test="workflowid != null">-->
+<!--        workflowid = #{workflowid,jdbcType=VARCHAR},-->
+<!--      </if>-->
+<!--      <if test="status != null">-->
+<!--        `status` = #{status,jdbcType=INTEGER},-->
+<!--      </if>-->
+<!--      <if test="stage != null">-->
+<!--        stage = #{stage,jdbcType=VARCHAR},-->
+<!--      </if>-->
+<!--      <if test="auditor != null">-->
+<!--        auditor = #{auditor,jdbcType=VARCHAR},-->
+<!--      </if>-->
+<!--      <if test="removeFlag != null">-->
+<!--        remove_flag = #{removeFlag,jdbcType=VARCHAR},-->
+<!--      </if>-->
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAccount != null">
+        update_account = #{updateAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="updateName != null">
+        update_name = #{updateName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

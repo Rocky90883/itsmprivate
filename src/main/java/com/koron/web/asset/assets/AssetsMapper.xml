@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koron.web.asset.assets.AssetsMapper">
+
+  <resultMap id="BaseResultMap" type="com.koron.web.asset.assets.bean.AssetsBean">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="orgId" jdbcType="VARCHAR" property="orgid" />
+    <result column="sn_number" jdbcType="VARCHAR" property="snNumber" />
+    <result column="asset_type_id" jdbcType="VARCHAR" property="assetTypeId" />
+    <result column="goods_model" jdbcType="VARCHAR" property="goodsModel" />
+    <result column="assets_number" jdbcType="VARCHAR" property="assetsNumber" />
+    <result column="fixed_number" jdbcType="VARCHAR" property="fixedNumber" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="brand" jdbcType="VARCHAR" property="brand" />
+    <result column="depat_code" jdbcType="VARCHAR" property="depatCode" />
+    <result column="portion_id" jdbcType="VARCHAR" property="portionId" />
+    <result column="register_id" jdbcType="VARCHAR" property="registerId" />
+    <result column="emp_id" jdbcType="VARCHAR" property="empId" />
+    <result column="assets_status" jdbcType="INTEGER" property="assetsStatus" />
+    <result column="regis_status" jdbcType="INTEGER" property="regisStatus" />
+    <result column="ass_shift_id" jdbcType="VARCHAR" property="assShiftId" />
+    <result column="scrapped_id" jdbcType="VARCHAR" property="scrappedId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_account" jdbcType="VARCHAR" property="createAccount" />
+    <result column="create_name" jdbcType="VARCHAR" property="createName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_account" jdbcType="VARCHAR" property="updateAccount" />
+    <result column="update_name" jdbcType="VARCHAR" property="updateName" />
+    <result column="assetTypeName" jdbcType="VARCHAR" property="assetTypeName" />
+    <result column="staffunName" jdbcType="VARCHAR" property="staffunName" />
+    <result column="depatName" jdbcType="VARCHAR" property="depatName" />
+    <result column="registerNo" jdbcType="VARCHAR" property="registerNo" />
+    <result column="portionNo" jdbcType="VARCHAR" property="portionNo" />
+    <result column="scrappedNo" jdbcType="VARCHAR" property="scrappedNo" />
+    <result column="assShiftNo" jdbcType="VARCHAR" property="assShiftNo" />
+  </resultMap>
+
+  <sql id="listCondition">
+    <where>
+      1=1
+      <if test="orgid        !=null and orgid        !='' "> and assets.orgId         =#{orgid        }</if>
+      <if test="snNumber     !=null and snNumber     !='' "> and assets.sn_number     =#{snNumber     }</if>
+      <if test="assetTypeId  !=null and assetTypeId  !='' "> and assets.asset_type_id =#{assetTypeId  }</if>
+<!--      <if test="goodsModel   !=null and goodsModel   !='' "> and assets.goods_model   =#{goodsModel   }</if>-->
+      <if test="goodsModel != null and goodsModel !=''">
+        and assets.goods_model like CONCAT('%', #{goodsModel}, '%')
+      </if>
+      <if test="assetsNumber !=null and assetsNumber !='' "> and assets.assets_number =#{assetsNumber }</if>
+      <if test="fixedNumber  !=null and fixedNumber  !='' "> and assets.fixed_number  =#{fixedNumber  }</if>
+      <if test="companyId    !=null and companyId    !='' "> and assets.company_id    =#{companyId    }</if>
+      <if test="brand        !=null and brand        !='' "> and assets.brand         =#{brand        }</if>
+      <if test="depatCode    !=null and depatCode    !='' "> and assets.depat_code    =#{depatCode    }</if>
+      <if test="portionId    !=null and portionId    !='' "> and assets.portion_id    =#{portionId    }</if>
+      <if test="registerId   !=null and registerId   !='' "> and assets.register_id   =#{registerId   }</if>
+      <if test="empId        !=null and empId        !='' "> and assets.emp_id        =#{empId        }</if>
+      <if test="assetsStatus !=null "> and assets.assets_status =#{assetsStatus }</if>
+      <if test="regisStatus  !=null "> and assets.regis_status  =#{regisStatus  }</if>
+      <if test="assShiftId   !=null and assShiftId   !='' "> and assets.ass_shift_id  =#{assShiftId   }</if>
+      <if test="scrappedId   !=null and scrappedId   !='' "> and assets.scrapped_id   =#{scrappedId   }</if>
+       and assets.regis_status!=-1
+    </where>
+  </sql>
+
+  <select id="queryList" parameterType="com.koron.web.asset.assets.bean.AssetsQueryBean" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from assets
+    left join tblstaffun s on s.code=assets.emp_id
+    left join asset_type t on t.id=assets.asset_type_id
+    left join tbldepartun d on d.code=assets.depat_code
+    left join asset_regist r on r.id=assets.register_id
+    left join asset_portion p on p.id=assets.portion_id
+    left join scrapped bf on bf.id=assets.scrapped_id
+    left join asset_shift shi on shi.id=assets.ass_shift_id
+    <include refid="listCondition"></include>
+    order by assets.create_time desc
+  </select>
+
+  <sql id="Base_Column_List">
+    assets.id, assets.orgId, assets.sn_number, assets.asset_type_id, assets.goods_model, assets.assets_number, assets.fixed_number, assets.company_id,
+    assets.brand, assets.depat_code, assets.portion_id, assets.register_id, assets.emp_id, assets.assets_status, assets.regis_status, assets.ass_shift_id,
+    assets.scrapped_id, assets.create_time, assets.create_account, assets.create_name, assets.update_time, assets.update_account,
+    assets.update_name,s.name as staffunName,t.typeName as assetTypeName,d.name as depatName,
+    r.bill_no as registerNo,p.portion_bill_no as portionNo,bf.bill_no as scrappedNo,shi.bill_no as assShiftNo
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from assets
+    left join tblstaffun s on s.code=assets.emp_id
+    left join asset_type t on t.id=assets.asset_type_id
+    left join tbldepartun d on d.code=assets.depat_code
+    left join asset_regist r on r.id=assets.register_id
+    left join asset_portion p on p.id=assets.portion_id
+    left join scrapped bf on bf.id=assets.scrapped_id
+    left join asset_shift shi on shi.id=assets.ass_shift_id
+    where assets.id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from assets
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.koron.web.asset.assets.bean.AssetsBean" useGeneratedKeys="true">
+    insert into assets
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orgid != null">
+        orgId,
+      </if>
+      <if test="snNumber != null">
+        sn_number,
+      </if>
+      <if test="assetTypeId != null">
+        asset_type_id,
+      </if>
+      <if test="goodsModel != null">
+        goods_model,
+      </if>
+      <if test="assetsNumber != null">
+        assets_number,
+      </if>
+      <if test="fixedNumber != null">
+        fixed_number,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="brand != null">
+        brand,
+      </if>
+      <if test="depatCode != null">
+        depat_code,
+      </if>
+      <if test="portionId != null">
+        portion_id,
+      </if>
+      <if test="registerId != null">
+        register_id,
+      </if>
+      <if test="empId != null">
+        emp_id,
+      </if>
+      <if test="assetsStatus != null">
+        assets_status,
+      </if>
+      <if test="regisStatus != null">
+        regis_status,
+      </if>
+      <if test="assShiftId != null">
+        ass_shift_id,
+      </if>
+      <if test="scrappedId != null">
+        scrapped_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createAccount != null">
+        create_account,
+      </if>
+      <if test="createName != null">
+        create_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="orgid != null">
+        #{orgid,jdbcType=VARCHAR},
+      </if>
+      <if test="snNumber != null">
+        #{snNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="assetTypeId != null">
+        #{assetTypeId,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsModel != null">
+        #{goodsModel,jdbcType=VARCHAR},
+      </if>
+      <if test="assetsNumber != null">
+        #{assetsNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="fixedNumber != null">
+        #{fixedNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="brand != null">
+        #{brand,jdbcType=VARCHAR},
+      </if>
+      <if test="depatCode != null">
+        #{depatCode,jdbcType=VARCHAR},
+      </if>
+      <if test="portionId != null">
+        #{portionId,jdbcType=VARCHAR},
+      </if>
+      <if test="registerId != null">
+        #{registerId,jdbcType=VARCHAR},
+      </if>
+      <if test="empId != null">
+        #{empId,jdbcType=VARCHAR},
+      </if>
+      <if test="assetsStatus != null">
+        #{assetsStatus,jdbcType=INTEGER},
+      </if>
+      <if test="regisStatus != null">
+        #{regisStatus,jdbcType=INTEGER},
+      </if>
+      <if test="assShiftId != null">
+        #{assShiftId,jdbcType=VARCHAR},
+      </if>
+      <if test="scrappedId != null">
+        #{scrappedId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createAccount != null">
+        #{createAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="createName != null">
+        #{createName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.koron.web.asset.assets.bean.AssetsBean">
+    update assets
+    <set>
+      <if test="orgid != null">
+        orgId = #{orgid,jdbcType=VARCHAR},
+      </if>
+      <if test="snNumber != null">
+        sn_number = #{snNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="assetTypeId != null">
+        asset_type_id = #{assetTypeId,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsModel != null">
+        goods_model = #{goodsModel,jdbcType=VARCHAR},
+      </if>
+      <if test="assetsNumber != null">
+        assets_number = #{assetsNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="fixedNumber != null">
+        fixed_number = #{fixedNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="brand != null">
+        brand = #{brand,jdbcType=VARCHAR},
+      </if>
+      <if test="depatCode != null">
+        depat_code = #{depatCode,jdbcType=VARCHAR},
+      </if>
+      <if test="portionId != null">
+        portion_id = #{portionId,jdbcType=VARCHAR},
+      </if>
+      <if test="registerId != null">
+        register_id = #{registerId,jdbcType=VARCHAR},
+      </if>
+      <if test="empId != null">
+        emp_id = #{empId,jdbcType=VARCHAR},
+      </if>
+      <if test="assetsStatus != null">
+        assets_status = #{assetsStatus,jdbcType=INTEGER},
+      </if>
+      <if test="regisStatus != null">
+        regis_status = #{regisStatus,jdbcType=INTEGER},
+      </if>
+      <if test="assShiftId != null">
+        ass_shift_id = #{assShiftId,jdbcType=VARCHAR},
+      </if>
+      <if test="scrappedId != null">
+        scrapped_id = #{scrappedId,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAccount != null">
+        update_account = #{updateAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="updateName != null">
+        update_name = #{updateName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

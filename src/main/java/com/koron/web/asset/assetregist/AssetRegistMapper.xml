@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koron.web.asset.assetregist.AssetRegistMapper">
+
+  <resultMap id="BaseResultMap" type="com.koron.web.asset.assetregist.bean.AssetRegistBean">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="orgId" jdbcType="VARCHAR" property="orgid" />
+    <result column="bill_no" jdbcType="VARCHAR" property="billNo" />
+    <result column="asset_type_id" jdbcType="VARCHAR" property="assetTypeId" />
+    <result column="contract_no" jdbcType="VARCHAR" property="contractNo" />
+    <result column="buy_date" jdbcType="VARCHAR" property="buyDate" />
+    <result column="emp_id" jdbcType="VARCHAR" property="empId" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="goods_model" jdbcType="VARCHAR" property="goodsModel" />
+    <result column="qty" jdbcType="DOUBLE" property="qty" />
+    <result column="over_qty" jdbcType="DOUBLE" property="overQty" />
+    <result column="brand" jdbcType="VARCHAR" property="brand" />
+    <result column="cpu" jdbcType="VARCHAR" property="cpu" />
+    <result column="ram" jdbcType="VARCHAR" property="ram" />
+    <result column="disk" jdbcType="VARCHAR" property="disk" />
+    <result column="wattage" jdbcType="VARCHAR" property="wattage" />
+    <result column="portqty" jdbcType="VARCHAR" property="portqty" />
+    <result column="bandwidth" jdbcType="VARCHAR" property="bandwidth" />
+    <result column="spec" jdbcType="VARCHAR" property="spec" />
+    <result column="edition" jdbcType="VARCHAR" property="edition" />
+    <result column="warranty" jdbcType="VARCHAR" property="warranty" />
+    <result column="annex" jdbcType="VARCHAR" property="annex" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_account" jdbcType="VARCHAR" property="createAccount" />
+    <result column="create_name" jdbcType="VARCHAR" property="createName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_account" jdbcType="VARCHAR" property="updateAccount" />
+    <result column="update_name" jdbcType="VARCHAR" property="updateName" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="assetTypeName" jdbcType="VARCHAR" property="assetTypeName" />
+    <result column="staffunName" jdbcType="VARCHAR" property="staffunName" />
+    <result column="comFullName" jdbcType="VARCHAR" property="comFullName" />
+  </resultMap>
+
+  <sql id="listCondition">
+    <where>
+      1=1
+      <if test="billNo       !=null and billNo       !='' "> and bill_no       =#{billNo       }</if>
+      <if test="assetTypeId  !=null and assetTypeId  !='' "> and asset_type_id =#{assetTypeId  }</if>
+      <if test="empId        !=null and empId        !='' "> and emp_id        =#{empId        }</if>
+      <if test="companyId    !=null and companyId    !='' "> and company_id    =#{companyId    }</if>
+      <if test="brand        !=null and brand        != ''"> and brand         =#{brand        }</if>
+      <if test="contractNo   !=null and contractNo   !='' "> and contract_no           like CONCAT('%', #{contractNo}, '%')</if>
+      <if test ="goodsModel  !=null and goodsModel   !='' "> and regist.goods_model    like CONCAT('%', #{goodsModel}, '%')</if>
+      <if test="remark       !=null and remark       != '' ">and remark                like CONCAT('%', #{remark}, '%')</if>
+
+      <if test="beginDate  != null and beginDate != ''">
+          and DATE_FORMAT( buy_date, '%Y-%m-%d') &gt;= DATE_FORMAT(#{beginDate}, '%Y-%m-%d')
+      </if>
+      <if test="endDate != null and endDate != ''">
+          and DATE_FORMAT( buy_date, '%Y-%m-%d') &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+      </if>
+    </where>
+  </sql>
+
+  <sql id="Base_Column_List">
+    regist.id, regist.orgId, regist.bill_no, regist.asset_type_id, regist.contract_no, regist.buy_date, regist.emp_id, regist.company_id, regist.goods_model,
+    regist.qty, regist.over_qty, regist.brand, regist.cpu, regist.ram, `disk`, regist.wattage, regist.portqty, regist.bandwidth, regist.spec, regist.edition,
+    regist.warranty, regist.annex, regist.create_time, regist.create_account, regist.create_name, regist.update_time, regist.update_account,
+    regist.update_name, regist.remark,t.typeName as assetTypeName,s.name as staffunName,c.com_full_name as comFullName
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from asset_regist regist
+    left join asset_type t on t.id=regist.asset_type_id
+    left join tblstaffun s on s.code=regist.emp_id
+    left join tblcompany c on c.id=regist.company_id
+    where regist.id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="queryList" parameterType="com.koron.web.asset.assetregist.bean.AssetRegistQueryBean" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from asset_regist regist
+    left join asset_type t on t.id=regist.asset_type_id
+    left join tblstaffun s on s.code=regist.emp_id
+    left join tblcompany c on c.id=regist.company_id
+    <include refid="listCondition"></include>
+    order by regist.buy_date desc
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from asset_regist
+    where 1=1 and id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insertSelective"  parameterType="com.koron.web.asset.assetregist.bean.AssetRegistBean" >
+    insert into asset_regist
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orgid != null">
+        orgId,
+      </if>
+      <if test="billNo != null">
+        bill_no,
+      </if>
+      <if test="assetTypeId != null">
+        asset_type_id,
+      </if>
+      <if test="contractNo != null">
+        contract_no,
+      </if>
+      <if test="buyDate != null">
+        buy_date,
+      </if>
+      <if test="empId != null">
+        emp_id,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="goodsModel != null">
+        goods_model,
+      </if>
+      <if test="qty != null">
+        qty,
+      </if>
+      <if test="overQty != null">
+        over_qty,
+      </if>
+      <if test="brand != null">
+        brand,
+      </if>
+      <if test="cpu != null">
+        cpu,
+      </if>
+      <if test="ram != null">
+        ram,
+      </if>
+      <if test="disk != null">
+        `disk`,
+      </if>
+      <if test="wattage != null">
+        wattage,
+      </if>
+      <if test="portqty != null">
+        portqty,
+      </if>
+      <if test="bandwidth != null">
+        bandwidth,
+      </if>
+      <if test="spec != null">
+        spec,
+      </if>
+      <if test="edition != null">
+        edition,
+      </if>
+      <if test="warranty != null">
+        warranty,
+      </if>
+      <if test="annex != null">
+        annex,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createAccount != null">
+        create_account,
+      </if>
+      <if test="createName != null">
+        create_name,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateAccount != null">
+        update_account,
+      </if>
+      <if test="updateName != null">
+        update_name,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="orgid != null">
+        #{orgid,jdbcType=VARCHAR},
+      </if>
+      <if test="billNo != null">
+        #{billNo,jdbcType=VARCHAR},
+      </if>
+      <if test="assetTypeId != null">
+        #{assetTypeId,jdbcType=VARCHAR},
+      </if>
+      <if test="contractNo != null">
+        #{contractNo,jdbcType=VARCHAR},
+      </if>
+      <if test="buyDate != null">
+        #{buyDate,jdbcType=VARCHAR},
+      </if>
+      <if test="empId != null">
+        #{empId,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsModel != null">
+        #{goodsModel,jdbcType=VARCHAR},
+      </if>
+      <if test="qty != null">
+        #{qty,jdbcType=DOUBLE},
+      </if>
+      <if test="overQty != null">
+        #{overQty,jdbcType=DOUBLE},
+      </if>
+      <if test="brand != null">
+        #{brand,jdbcType=VARCHAR},
+      </if>
+      <if test="cpu != null">
+        #{cpu,jdbcType=VARCHAR},
+      </if>
+      <if test="ram != null">
+        #{ram,jdbcType=VARCHAR},
+      </if>
+      <if test="disk != null">
+        #{disk,jdbcType=VARCHAR},
+      </if>
+      <if test="wattage != null">
+        #{wattage,jdbcType=VARCHAR},
+      </if>
+      <if test="portqty != null">
+        #{portqty,jdbcType=VARCHAR},
+      </if>
+      <if test="bandwidth != null">
+        #{bandwidth,jdbcType=VARCHAR},
+      </if>
+      <if test="spec != null">
+        #{spec,jdbcType=VARCHAR},
+      </if>
+      <if test="edition != null">
+        #{edition,jdbcType=VARCHAR},
+      </if>
+      <if test="warranty != null">
+        #{warranty,jdbcType=VARCHAR},
+      </if>
+      <if test="annex != null">
+        #{annex,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createAccount != null">
+        #{createAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="createName != null">
+        #{createName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAccount != null">
+        #{updateAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="updateName != null">
+        #{updateName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.koron.web.asset.assetregist.bean.AssetRegistBean">
+    update asset_regist
+    <set>
+      <if test="orgid != null">
+        orgId = #{orgid,jdbcType=VARCHAR},
+      </if>
+      <if test="assetTypeId != null">
+        asset_type_id = #{assetTypeId,jdbcType=VARCHAR},
+      </if>
+      <if test="contractNo != null">
+        contract_no = #{contractNo,jdbcType=VARCHAR},
+      </if>
+      <if test="buyDate != null">
+        buy_date = #{buyDate,jdbcType=VARCHAR},
+      </if>
+      <if test="empId != null">
+        emp_id = #{empId,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsModel != null">
+        goods_model = #{goodsModel,jdbcType=VARCHAR},
+      </if>
+      <if test="qty != null">
+        qty = #{qty,jdbcType=DOUBLE},
+      </if>
+<!--      <if test="overQty != null">
+        over_qty = #{overQty,jdbcType=DOUBLE},
+      </if>-->
+      <if test="brand != null">
+        brand = #{brand,jdbcType=VARCHAR},
+      </if>
+      <if test="cpu != null">
+        cpu = #{cpu,jdbcType=VARCHAR},
+      </if>
+      <if test="ram != null">
+        ram = #{ram,jdbcType=VARCHAR},
+      </if>
+      <if test="disk != null">
+        `disk` = #{disk,jdbcType=VARCHAR},
+      </if>
+      <if test="wattage != null">
+        wattage = #{wattage,jdbcType=VARCHAR},
+      </if>
+      <if test="portqty != null">
+        portqty = #{portqty,jdbcType=VARCHAR},
+      </if>
+      <if test="bandwidth != null">
+        bandwidth = #{bandwidth,jdbcType=VARCHAR},
+      </if>
+      <if test="spec != null">
+        spec = #{spec,jdbcType=VARCHAR},
+      </if>
+      <if test="edition != null">
+        edition = #{edition,jdbcType=VARCHAR},
+      </if>
+      <if test="warranty != null">
+        warranty = #{warranty,jdbcType=VARCHAR},
+      </if>
+      <if test="annex != null">
+        annex = #{annex,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createAccount != null">
+        create_account = #{createAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="createName != null">
+        create_name = #{createName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAccount != null">
+        update_account = #{updateAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="updateName != null">
+        update_name = #{updateName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+
+  <select id="queryListByOffice"  resultType="com.koron.web.asset.assetregist.bean.RegistSoftwareVo">
+    select
+    regist.qty-regist.over_qty-ifnull(app.qty,0) as instock,t.typeName as assetTypeName,regist.bill_no,regist.goods_model,regist.id
+    from asset_regist regist
+    left join (
+    select det.source_id,sum(det.qty) as qty
+    from officeapp
+    left join officeappdet det on det.f_ref=officeapp.id
+    where `status` = 3
+    group by det.source_id
+    ) app on app.source_id = regist.id
+    left join asset_type t on t.id=regist.asset_type_id
+    left join tblstaffun s on s.code=regist.emp_id
+    left join tblcompany c on c.id=regist.company_id
+    where t.classCode in ('0000200003','0000200004') and regist.qty-regist.over_qty-ifnull(app.qty,0)>0
+    order by regist.buy_date desc
+  </select>
+
+</mapper>

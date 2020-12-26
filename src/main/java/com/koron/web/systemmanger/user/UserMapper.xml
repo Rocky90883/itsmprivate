@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koron.web.systemmanger.user.UserMapper">
+
+
+    <sql id="listCondition">
+        <where>
+            1=1
+            <if test="loginId   !=null"> and login_id   =#{loginId   }</if>
+            <if test="loginName !=null"> and login_name =#{loginName }</if>
+            <if test="password  !=null"> and password   =#{password  }</if>
+            <if test="userName  !=null"> and user_name  like '%' || #{userName} || '%'</if>
+            <if test="deptId    !=null and deptId!='' "> and dept_id    =#{deptId    }</if>
+            <if test="deptName  !=null"> and dept_name  =#{deptName  }</if>
+            <if test="email     !=null"> and email      =#{email     }</if>
+            <if test="birthday  !=null"> and birthday   =#{birthday  }</if>
+            <if test="addr      !=null"> and addr       =#{addr      }</if>
+            <if test="tel       !=null"> and tel        =#{tel       }</if>
+            <if test="mobile    !=null"> and mobile     =#{mobile    }</if>
+            <if test="createTime!=null"> and create_time=#{createTime}</if>
+            <if test="userDesc  !=null"> and user_desc  =#{userDesc  }</if>
+            <if test="dFlag     !=null"> and d_flag     =#{dFlag     }</if>
+            <if test="sort      !=null"> and sort       =#{sort      }</if>
+            <if test="type      !=null"> and type       =#{type      }</if>
+            <if test="job       !=null"> and job        =#{job       }</if>
+            <if test="regId     !=null"> and reg_id     =#{regId     }</if>
+            <if test="leadFlag  !=null"> and lead_flag  =#{leadFlag  }</if>
+        </where>
+    </sql>
+
+    <select id="list" parameterType="com.koron.web.systemmanger.user.UserQueryBean" resultType="com.koron.web.systemmanger.user.UserBean">
+        select * FROM (
+            select tt.*,ROWNUM as rowmo FROM (
+                select * from sys_all_user t
+                <include refid="listCondition"></include> ORDER BY t.login_name asc
+            ) tt
+        ) table_alias
+        <if test="pageSize != -1">
+            where table_alias.rowmo BETWEEN #{begin} and #{end}
+        </if>
+    </select>
+
+    <select id="count" parameterType="com.koron.web.systemmanger.user.UserQueryBean" resultType="Integer">
+        SELECT COUNT(*) FROM sys_all_user
+        <include refid="listCondition"></include>
+    </select>
+
+
+    <update id="update" parameterType="com.koron.web.systemmanger.user.UserQueryBean">
+        UPDATE sys_all_user
+        <set>
+            <if test ='null != loginId'>login_id = #{loginId},</if>
+            <if test ='null != loginName'>login_name = #{loginName},</if>
+            <if test ='null != password'>password = #{password},</if>
+            <if test ='null != userName'>user_name = #{userName},</if>
+            <if test ='null != deptId'>dept_id = #{deptId},</if>
+            <if test ='null != deptName'>dept_name = #{deptName},</if>
+            <if test ='null != email'>email = #{email},</if>
+            <if test ='null != birthday'>birthday = #{birthday},</if>
+            <if test ='null != addr'>addr = #{addr},</if>
+            <if test ='null != tel'>tel = #{tel},</if>
+            <if test ='null != mobile'>mobile = #{mobile},</if>
+            <if test ='null != createTime'>create_time = #{createTime},</if>
+            <if test ='null != userDesc'>user_desc = #{userDesc},</if>
+            <if test ='null != dFlag'>d_flag = #{dFlag},</if>
+            <if test ='null != sort'>sort = #{sort},</if>
+            <if test ='null != type'>type = #{type},</if>
+            <if test ='null != job'>job = #{job},</if>
+            <if test ='null != regId'>reg_id = #{regId},</if>
+            <if test ='null != leadFlag'>lead_flag = #{leadFlag}</if>
+        </set>
+        WHERE login_id = #{loginId}
+
+    </update>
+
+
+    <insert id="add" parameterType="com.koron.web.systemmanger.user.UserBean">
+        INSERT INTO sys_all_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test ='null != loginId'>
+                login_id,
+            </if>
+            <if test ='null != loginName'>
+                login_name,
+            </if>
+            <if test ='null != password'>
+                password,
+            </if>
+            <if test ='null != userName'>
+                user_name,
+            </if>
+            <if test ='null != deptId'>
+                dept_id,
+            </if>
+            <if test ='null != deptName'>
+                dept_name,
+            </if>
+            <if test ='null != email'>
+                email,
+            </if>
+            <if test ='null != birthday'>
+                birthday,
+            </if>
+            <if test ='null != addr'>
+                addr,
+            </if>
+            <if test ='null != tel'>
+                tel,
+            </if>
+            <if test ='null != mobile'>
+                mobile,
+            </if>
+            <if test ='null != createTime'>
+                create_time,
+            </if>
+            <if test ='null != userDesc'>
+                user_desc,
+            </if>
+            <if test ='null != dFlag'>
+                d_flag,
+            </if>
+            <if test ='null != sort'>
+                sort,
+            </if>
+            <if test ='null != type'>
+                type,
+            </if>
+            <if test ='null != job'>
+                job,
+            </if>
+            <if test ='null != regId'>
+                reg_id,
+            </if>
+            <if test ='null != leadFlag'>
+                lead_flag
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test ='null != loginId'>
+                #{loginId},
+            </if>
+            <if test ='null != loginName'>
+                #{loginName},
+            </if>
+            <if test ='null != password'>
+                #{password},
+            </if>
+            <if test ='null != userName'>
+                #{userName},
+            </if>
+            <if test ='null != deptId'>
+                #{deptId},
+            </if>
+            <if test ='null != deptName'>
+                #{deptName},
+            </if>
+            <if test ='null != email'>
+                #{email},
+            </if>
+            <if test ='null != birthday'>
+                #{birthday},
+            </if>
+            <if test ='null != addr'>
+                #{addr},
+            </if>
+            <if test ='null != tel'>
+                #{tel},
+            </if>
+            <if test ='null != mobile'>
+                #{mobile},
+            </if>
+            <if test ='null != createTime'>
+                #{createTime},
+            </if>
+            <if test ='null != userDesc'>
+                #{userDesc},
+            </if>
+            <if test ='null != dFlag'>
+                #{dFlag},
+            </if>
+            <if test ='null != sort'>
+                #{sort},
+            </if>
+            <if test ='null != type'>
+                #{type},
+            </if>
+            <if test ='null != job'>
+                #{job},
+            </if>
+            <if test ='null != regId'>
+                #{regId},
+            </if>
+            <if test ='null != leadFlag'>
+                #{leadFlag}
+            </if>
+        </trim>
+    </insert>
+
+    <select id="queryStaffun" parameterType="com.koron.web.systemmanger.user.bean.StaffunQueryBean" resultType="com.koron.web.systemmanger.user.bean.StaffunBean">
+        SELECT * from tblstaffun WHERE 1=1
+        <if test="name !=null and name !=''">and name like concat('%',#{name},'%')</if>
+        <if test="orgNodeCode !=null and orgNodeCode !=''">and org_Node_Code=#{orgNodeCode}</if>
+    </select>
+
+    <!-- 批量添加 -->
+    <insert parameterType="java.util.List" id="addStaffs">
+        INSERT INTO `tblstaffun`
+        (`name`,`code`,`workflow_code`,`org_node_code`,`phone`,`mobile`,`email`,`sex`,`org_node_name`,`status`,`title`)
+        VALUES
+        <foreach collection="list" item="li" separator=",">
+            (#{li.name},#{li.code},#{li.workflowCode},#{li.orgNodeCode},#{li.phone},#{li.mobile},#{li.email},#{li.sex},#{li.orgNodeName},1,#{li.title})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        name= VALUES(`name`), code= VALUES(`code`), workflow_code= VALUES(`workflow_code`), org_node_code= VALUES(`org_node_code`),
+        phone= VALUES(`phone`), mobile= VALUES(`mobile`), email= VALUES(`email`),
+        sex= VALUES(`sex`), org_node_name= VALUES(`org_node_name`), status= VALUES(`status`), title= VALUES(`title`)
+    </insert>
+
+    <!-- 批量修改 -->
+    <update id="updateStaffs" parameterType="java.util.List" >
+        <foreach collection="list" item="it" index="index" open="" close="" separator=";">
+            UPDATE `tblstaffun`
+            <set>
+                `name`=#{it.name},`workflow_code`=#{it.workflowCode},`org_node_code`=#{it.orgNodeCode},`org_node_name`=#{it.orgNodeName},`phone`=#{it.phone},
+                `mobile`=#{it.mobile},`email`=#{it.email},`sex`=#{it.sex},`title`=#{it.title},`status`=#{it.status}
+            </set>
+            WHERE code = #{it.code}
+        </foreach>
+    </update>
+
+</mapper>
